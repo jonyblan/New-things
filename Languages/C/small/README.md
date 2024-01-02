@@ -1,3 +1,3 @@
-Project: Command-Line File Copy Utility
+Project: Student Management System
 
-Description: Develop a command-line program in C that copies files from one directory to another. Use standard C libraries for file manipulation and error handling.
+Description: Build a console-based student management system in C. Include functionalities such as adding new students, displaying student information, calculating average grades, and sorting students based on certain criteria (e.g., by name or GPA).
