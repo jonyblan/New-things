@@ -1,0 +1,1 @@
+Some small proyects I made because I was bored in the second semester of 2023 during the syllabus of Imperative Programming
