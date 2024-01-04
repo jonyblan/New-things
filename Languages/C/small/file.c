@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "file.h"
 
-#define CANT_OPTIONS 3 // should change this to change automatically as new features are addded
+#define CANT_OPTIONS 5 // should change this to change automatically as new features are addded
 
 
 
@@ -55,47 +55,97 @@ void showMenu(void){
 	puts("5: Sort by score");
 }
 
-int handleError(int ans, int code){
-	int ret = 1;
+int handleErrorData(int code){
 	if(code != 1){
 		while (getchar() != '\n'){
 
 		}
 		printf("Incorrect data type\n");
-		ret = 0;
+		return 0;
 	}
-	else if(ans <= 0 && ans > CANT_OPTIONS){
-		int cantOptions = CANT_OPTIONS;
-		printf("Please choose a number between 1 and %d\n", cantOptions);
-		ret = 0;
+	return 1;
+}
+
+handleErrorInput(int ans, int max, int min){
+	if(ans < min && ans > max){
+		int cantOptions = max;
+		printf("Please choose a number between 1 and %d\n", max);
+		return 0;
 	}
+	return 1
+}
+
+int handleError(int ans, int code){
+	int ret = 1;
+	ret = ret && handleErrorData(code);
+	ret = ret && handleErrorInput(ans, max, min)
+	
+	else 
 	return ret;
 }
 
 int handleInput(void){
-	int out = 0, ans, code;
+	int out, ans, code;
 	do{
+		out = 0;
 		printf("Please choose what you want to do\n");
 		showMenu();
 		code = scanf("%d", &ans);
-		
-		out = handleError(ans, code);
+		out = out || handleErrorData(code);
+		out = out || handleErrorInput(and, CANT_OPTIONS, 1);
 	} while(!out);
 	duringProcess();
 	return ans;
 }
 
-int menu(int * pass){
-	int ans = handleInput();
-	if(ans == 1){
-		*pass = 0;
-	}
+void error(char * msg){
+	cls();
+	puts("%s", msg);
+	exit(1);
 }
 
-void analizeOption(int pass, int option){
-	if(!pass){
-		return ;
+int menu(int * pass){ 
+	int ans = handleInput();
+	return ans;
+}
+
+elemType askData(){
+	char * name;
+	int score;
+	puts("Please enter the name of the student:\n");
+	scanf("%s", &name);
+	puts("Please enter the score of the student:\n");
+	scanf("%d", &score);
+	handleErrorInput()
+}
+
+char * addStudent(){
+	elemType data = askData();
+}
+
+char * analizeOption(int pass, int option){
+	char * errormsg = "";
+	switch (option){ // this can be done with an array of functions
+	case 1:
+		*pass = 0;
+		break;
+	case 2:
+		errormsg = addStudent();
+		break;
+	case 3:
+		errormsg = showStudents();
+		break;
+	case 4:
+		errormsg = sortByName();
+		break;
+	case 5:
+		errormsg = sortByScore();
+		break;
+	default:
+		errormsg = "Error in handling input";
+		break;
 	}
+	return errormsg;
 }
 
 void freeMem(manageADT manage){
@@ -118,7 +168,10 @@ int main(){
 	manage = start();
 	while(pass){
 		option = menu(&pass);
-		analizeOption(pass, option);
+		char * rta = analizeOption(pass, option);
+		if(!strcmp("", rta)){
+			error(rta);
+		}
 	}
 	end(manage);
 }
