@@ -1,3 +1,3 @@
-Project: File Encryption/Decryption Tool
+Project: Inventory management system
 
-Description: Develop a command-line tool using C++ that encrypts and decrypts text files. Utilize standard C++ libraries for file input/output and basic encryption algorithms.
+Description: Develop console-based program in C++ that simulates a simple inventory management system. The program will allow the user to add, remove, and display items in an inventory.
