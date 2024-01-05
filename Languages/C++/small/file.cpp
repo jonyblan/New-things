@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <algorithm>
 using namespace std;
 
 #define CANT_OPTIONS 6
@@ -17,8 +19,11 @@ void start() {
     cout << "Welcome to the inventory manager." << endl;
 }
 
+void showItem(item data) {
+    cout << "Name: " << data.name << ", Price: " << data.price << ", Quantity: " << data.quantity << endl;
+}
+
 void menu(int * option) {
-    cout << *option << endl << endl;
     while(*option < 0 || *option > CANT_OPTIONS) {
         cout << "What do you want to do?" << endl;
         cout << "0: Exit" << endl;
@@ -54,34 +59,72 @@ int getPositive(string msg) {
     return aux;
 }
 
-item askItem() {
+item* isThereItemName(vector<item>& inventory, string name) {
+    for (vector<item>::iterator i = inventory.begin(); i != inventory.end(); i++) {
+        if (name == i->name) {
+            return &(*i);
+        }
+    }
+    return nullptr;
+}
+
+bool ynToBool(string msg) { // the message has to inform that the answer must be y/n
+    string aux;
+    bool cont = true;
+    while (cont) {
+        cout << msg << endl;
+        cin >> aux;
+        if (aux == "y" || aux == "Y") {
+            return true;
+        }
+        else if (aux == "n" || aux == "N") {
+            return false;
+        }
+    }
+}
+
+item* searchItem(vector<item> inventory) {
+    string name, aux;
+    bool cont = true, rta;
+    while (cont) {
+        name = getStr("Please enter the item's name");
+        item* itemRta = isThereItemName(inventory, name);
+        if (itemRta == nullptr) {
+            cout << "Item is not yet added" << endl;
+            cont = ynToBool("Try another name? (y/n)");
+        }
+        else {
+            return itemRta;
+        }
+    }
+    return nullptr;
+}
+
+void searchForItem(vector<item>& inventory) {
+    item* aux = searchItem(inventory); // Pass by reference
+    if (aux != nullptr) {
+        showItem(*aux);
+    }
+}
+
+item askItem(vector<item> inventory) {
+    bool equal = true;
     item aux = item();
     aux.name = getStr("Please enter the item's name");
+    equal = (isThereItemName(inventory, aux.name) != nullptr); // if there is an item it wont return nullptr
+    while (equal) {
+        aux.name = getStr("Please enter a name that isn't in use");
+        equal = (isThereItemName(inventory, aux.name) != nullptr); // if there is an item it wont return nullptr
+        
+    }
     aux.price = getPositive("What's the item's price?");
     aux.quantity = getPositive("How much inventory of that item is there?");
     return aux;
 }
 
 void addItem(vector<item>& inventory) {
-    item aux = askItem();
+    item aux = askItem(inventory);
     inventory.push_back(aux);
-}
-
-void showItem(item data) {
-    cout << "Name: " << data.name << ", Price: " << data.price << ", Quantity: " << data.quantity << endl;
-}
-
-item* searchItem(vector<item> inventory) {
-    string rta = getStr("Please enter the item's name");
-    item a;
-    for (vector<item>::iterator i = inventory.begin(); i != inventory.end(); i++) {
-        if (rta == i->name) {
-            showItem(*i);
-            return &(*i);
-        }
-    }
-    cout << "Item is not yet added";
-    return nullptr;
 }
 
 void updateItem(vector<item>& inventory) {
@@ -97,18 +140,46 @@ void updateItem(vector<item>& inventory) {
     aux->quantity = newQuantity;
 }
 
-void sortByValue(vector<item>& inventory) {
-    for (const item& i : inventory) {
-        cout << "Name: " << i.name << ", Quantity: " << i.quantity << ", Price: " << i.price << endl;
+void sortByValue(vector<item>& inventory) { // made a bubble sort because more complex sorting algorithms will be looked upon in /proyects/smallC/organize
+    bool organized = false;
+    int i, j, size = inventory.size();
+    for (i = 0; i < size-1 && !organized; i++) {
+        organized = true;
+        for (j = i; j < size - 1; j++) {
+            if (inventory[j].price > inventory[j + 1].price) {
+                organized = false;
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    for (vector<item>::iterator i = inventory.begin(); i != inventory.end(); i++) {
+        showItem(*i);
     }
 }
 
-void sortByName(vector<item>& inventory) {
-
+void sortByName(vector<item>& inventory) { // made a bubble sort because more complex sorting algorithms will be looked upon in /proyects/smallC/organize
+    bool organized = false;
+    int i, j, size = inventory.size();
+    for (i = 0; i < size - 1 && !organized; i++) {
+        organized = true;
+        for (j = i; j < size - 1; j++) {
+            if (inventory[j].name > inventory[j + 1].name) {
+                organized = false;
+                swap(inventory[j], inventory[j + 1]);
+            }
+        }
+    }
+    for (vector<item>::iterator i = inventory.begin(); i != inventory.end(); i++) {
+        showItem(*i);
+    }
 }
 
 void totalValue(vector<item> inventory) {
-
+    int i, size = inventory.size(), count = 0;
+    for (i = 0; i < size; i++) {
+        count += (inventory[i].price * inventory[i].quantity);
+    }
+    cout << "The total value of everything in the inventory is: $" << count << endl;
 }
 
 void analizeOption(int option, vector<item>& inventory) {
@@ -119,7 +190,7 @@ void analizeOption(int option, vector<item>& inventory) {
         addItem(inventory);
         break;
     case 2:
-        searchItem(inventory);
+        searchForItem(inventory);
         break;
     case 3:
         updateItem(inventory);
