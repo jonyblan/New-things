@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include "file.h"
 
+
 #define CANT_OPTIONS 5 // should change this to change automatically as new features are addded
-
-
 
 typedef struct elemType{
 	char * name;
@@ -29,11 +28,6 @@ manageADT getMemory(void){
 
 void cls(void) { // clears the console
 	printf("\033[1J\033[H");
-}
-
-void duringProcess(void){
-	cls();
-	printf("Processing...");
 }
 
 void firstMessage(void){
@@ -94,7 +88,7 @@ int handleInput(void){
 		out = out || handleErrorData(code);
 		out = out || handleErrorInput(and, CANT_OPTIONS, 1);
 	} while(!out);
-	duringProcess();
+	cls();
 	return ans;
 }
 
