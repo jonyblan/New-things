@@ -1,18 +1,7 @@
+from models import Transaction, Category
+from utils import getBool, numToBool, getPositive, validateInputMenu, validateInputInt
+
 CANT_OPTIONS = 4
-
-class Transaction:
-    def __init__(self, amount, categoryId, isIncome):
-        self.amount = amount
-        self.categoryId = categoryId
-        self.isIncome = isIncome
-
-    def display(self):
-        print("Amount: {self.amount}, Category: {self.categoryId}")
-
-class Category:
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
 
 def main():
 	cont = 1
@@ -53,8 +42,8 @@ def analize(cont, transactions, categories):
         1: (addTransaction, transactions),
         2: (addCategory, categories),
         3: (showBalance, transactions),
-		4: (showTransactions, ),
-		5: (showCategories, ),
+		4: (showTransactions, transactions),
+		5: (showCategories, categories),
 		6: (openTransaction, ),
 		7: (openCategorie, ),
     }
@@ -70,8 +59,7 @@ def addTransaction(transactions):
 	transactions.append(newTransaction)
 
 def addCategory(categories):
-	def addCategory(categories):
-    categoryId = len(categories) + 1  # Assuming categories start from 1 and increment by 1
+    categoryId = len(categories) + 1
     categoryName = getCategory()
     newCategory = Category(categoryId, categoryName)
     categories[categoryId] = newCategory
@@ -80,13 +68,13 @@ def showBalance():
 	category = getCategory()
 	showCategory(category)
 
-def showCategory(category):
+def showCategory():
 	notDone("showCategory")
 
-def showTransactions():
+def showTransactions(transactions):
 	notDone("showTransactions")
 
-def showCategories():
+def showCategories(categories):
 	notDone("showCategories")
 
 def openTransaction(): # should show it and give the option to update it or delete it
@@ -99,7 +87,7 @@ def defaultAnalize():
 	print("Error in analize()")
 	exit(1)
 
-def getAmount():
+def getAmount(): 
 	return getPositive("Please enter the amount of money (>0)")
 
 def getCategory():
@@ -107,41 +95,6 @@ def getCategory():
 
 def getIsIncome():
 	return getBool("Please enter if the transaction is an income or expense (1/0)")
-
-def getBool(msg):
-	user_input = -1
-	while (0 <= user_input <= 1):
-		user_input = input(msg)
-		if(not validateInputInt(user_input)):
-			user_input = -1
-	return numToBool(user_input)
-
-def numToBool(num):
-	if(num == 0):
-		return False
-	return True
-
-def getPositive(msg):
-	user_input = -1
-	while (user_input < 1):
-		user_input = input(msg)
-		if(not validateInputInt(user_input)):
-			user_input = -1
-	return int(user_input)
-
-# Returns true if the input is between 0 and CANT_OPTIONS - 1
-def validateInputMenu(user_input):
-	if validateInputInt(user_input):
-		if 0 <= user_input < CANT_OPTIONS:
-			return True
-	return False
-
-def validateInputInt(input):
-	try:
-		input = int(input)
-		return True
-	except ValueError:
-		return False
 
 def end():
 	notDone("end")
