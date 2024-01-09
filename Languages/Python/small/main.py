@@ -53,10 +53,29 @@ def analize(cont, transactions, categories):
 def addTransaction(transactions, categories):
 	print("addTransaction")
 	amount = getAmount()
-	category = getExistingCategory(categories)
+	categoryName = getExistingCategory(categories)
 	isIncome = getIsIncome()
-	newTransaction = Transaction(amount, category, isIncome)
+	newTransaction = Transaction(amount, categoryName, isIncome)
 	transactions.append(newTransaction)
+	updateValue(categories, categoryName, amount, isIncome)
+
+def updateValue(categories, categoryName, amount, is_income):
+	index = getCategoryIndexByName(categories, categoryName)
+	category = categories[index]
+	if is_income:
+		category.value += amount
+	else:
+		category.value -= amount
+
+# must be sent an existing category
+def getCategoryIndexByName(categories, categoryName):
+	index = 1
+	for index, category in categories.items():
+		if category.name == categoryName:
+			return index
+		index += 1
+	print("Error: Category not found")
+	exit(1)
 
 def addCategory(categories):
 	print("addCategory")
@@ -75,27 +94,31 @@ def showBalance(transactions):
 	print("The account balance is: " + str(sum))
 	waitForContinue()
 
-def showCategory(index, categories):
+def showCategory(categories, index, category):
 	if 1 <= index <= len(categories):
-		category_instance = categories[index]
-		category_instance.display()
+		print("Id: " + str(index) + ", Name: " + category.name + ", Value: " + str(category.value))
 	else:
 		print("Invalid category index")
 		exit(1)
 
-def showTransaction(index, transactions):
-	if 1 <= index <= len(categories):
-		transaction_instance = categories[index]
-		transaction_instance.display()
+def showTransaction(transactions, index):
+	if 0 <= index < len(transactions):
+		print("Index: " + str(index) + ", Amount: " + str(transactions[index].amount) + ", Category: " + str(transactions[index].categoryId) + ", Is Income: " + str(transactions[index].isIncome))
 	else:
-		print("Invalid transaction index")
+		print("Invalid transaction index: " + str(index) + str(len(transactions)))
 		exit(1)
 
 def showTransactions(transactions):
-	notDone("showTransactions")
+	index = 0
+	for transaction in transactions:
+		showTransaction(transactions, index)
+		index+=1
+	waitForContinue()
 
 def showCategories(categories):
-	notDone("showCategories")
+	for index, category in categories.items():
+		showCategory(categories, index, category)
+	waitForContinue()
 
 def openTransaction(): # should show it and give the option to update it or delete it
 	notDone("openTransaction")
@@ -135,7 +158,7 @@ def getCategory():
 	return inputStr
 
 def categoryExists(inputCategory, categories):
-	for category in categories:
+	for index, category in categories.items():
 		if(inputCategory == category.name):
 			return True
 	return False

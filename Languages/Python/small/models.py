@@ -8,12 +8,7 @@ class Transaction:
         print("Amount: {self.amount}, Category: {self.categoryId}")
 
 class Category:
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
-		self.value = 0
-	
-	def __init__(self, id, name, value):
+	def __init__(self, id, name, value = 0):
 		self.id = id
 		self.name = name
 		self.value = value
