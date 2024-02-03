@@ -1,1 +1,1 @@
-In this folder there will be the excercises given by the univerity
+Small proyects in Java to understand new concepts and basically kill boredom
