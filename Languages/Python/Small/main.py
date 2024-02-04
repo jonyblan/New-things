@@ -1,13 +1,17 @@
-
-import os
 from models import Transaction, Category
-from utils import getBool, numToBool, getPositive, validateInputMenu, validateInputInt, waitForContinue, clearConsole, itemMenuStart
+from utils import getBool, numToBool, getPositive, validateInputMenu, validateInputInt, waitForContinue, clearConsole, itemMenuStart, getInt
 from config import CANT_OPTIONS
 
 def main():
 	cont = 1
-	transactions = {}
+	transactions = []
 	categories = {}
+	firstTransaction = Transaction(0, 10, "abc", 1)
+	firstCategory = Category(0, "abc", 10)
+	index = len(categories) + 1
+	newCategory = Category(index, "abc", 10)
+	transactions.append(firstTransaction)
+	categories[index] = newCategory
 	start()
 	while cont:
 		cont = userInput()
@@ -45,7 +49,7 @@ def analize(cont, transactions, categories):
         3: (showBalance, transactions),
         4: (showTransactions, transactions),
         5: (showCategories, categories),
-        6: (openTransaction, ),
+        6: (openTransaction, transactions, categories),
         7: (openCategorie, ),
     }
     processCont, *args = contFunctions.get(cont, (defaultAnalize,))
@@ -58,7 +62,7 @@ def addTransaction(transactions, categories):
 	isIncome = getIsIncome()
 	transactionId = len(transactions) + 1
 	newTransaction = Transaction(transactionId, amount, categoryName, isIncome)
-	transactions[transactionId] = newTransaction
+	transactions.append(newTransaction)
 	updateValue(categories, categoryName, amount, isIncome)
 	waitForContinue()
 
@@ -99,24 +103,9 @@ def showBalance(transactions):
 	print("The account balance is: " + str(sum))
 	waitForContinue()
 
-def showCategory(categories, index, category):
-	if 1 <= index <= len(categories):
-		print("Id: " + str(index) + ", Name: " + category.name + ", Value: " + str(category.value))
-	else:
-		print("Invalid category index")
-		exit(1)
-
-#def showTransaction(transactions, index, transaction):
-#	if 0 <= index < len(transactions):
-#		print("Index: " + str(index) + ", Amount: " + str(transaction.amount) + ", Category: " + str(transaction.categoryId) + ", Is Income: " + str(transaction.isIncome))
-#	else:
-#		print("Invalid transaction index: " + str(index) + str(len(transactions)))
-#		exit(1)
-
 def showTransaction(transactions, index):
     if 0 <= index < len(transactions):
-        transaction = list(transactions.values())[index]
-        print("Index: " + str(index) + ", Amount: " + str(transaction.amount) + ", Category: " + str(transaction.categoryId) + ", Is Income: " + str(transaction.isIncome))
+        print("Index: " + str(index) + ", Amount: " + str(transactions[index].amount) + ", Category: " + str(transactions[index].categoryName) + ", Is Income: " + str(transactions[index].isIncome))
     else:
         print("Invalid transaction index: " + str(index) + str(len(transactions)))
         exit(1)
@@ -129,15 +118,82 @@ def showTransactions(transactions):
 		index+=1
 	waitForContinue()
 
+def showCategory(categories, index, category):
+	if 1 <= index <= len(categories):
+		print("Id: " + str(index) + ", Name: " + category.name + ", Value: " + str(category.value))
+	else:
+		print("Invalid category index")
+		exit(1)
+
 def showCategories(categories):
 	itemMenuStart("Categories:")
 	for index, category in categories.items():
 		showCategory(categories, index, category)
 	waitForContinue()
 
-def openTransaction(): # should show it and give the option to update it or delete it
+def openTransaction(transactions, categories): # should show it and give the option to update it or delete it
 	clearConsole()
-	getTransaction()
+	found = 0
+	transactionId = getInt("Please enter the transaction ID", "Please enter a number")
+	for transaction in transactions:
+		if(transaction.id == transactionId):
+			showTransaction(transactions, transactionId)
+			found = 1
+	if(not found):
+		print("The index is not found in the transactions")
+		waitForContinue()
+		return
+	edit = getBool("Would you like to edit it? (1/0)")
+	if(not edit):
+		waitForContinue()
+		return
+	option = 5
+	while option:
+		option = 5
+		clearConsole()
+		showTransaction(transactions, transactionId)
+		print("0: Exit")
+		print("1: Change Value")
+		print("2: Change Category")
+		print("3: Change income/expense")
+		print("4: Delete Transaction")
+		while(option < 0 or option > 4):
+			print("Enter a command: (0-4)")
+			option = getInt("", "Please enter a number")
+		if(option == 1):
+			newValue = getAmount()
+			catIndex = getCategoryIndexByName(categories, transactions[transactionId].categoryName)
+			categories[catIndex].value -= transactions[transactionId].amount
+			if(transactions[transactionId].isIncome):
+				categories[catIndex].value += newValue
+			else:
+				categories[catIndex].value -= newValue
+			transactions[transactionId].amount = newValue
+		if(option == 2):
+			newCategory = getExistingCategory(categories)
+			catIndex = getCategoryIndexByName(categories, transactions[transactionId].categoryName)
+			newCatIndex = getCategoryIndexByName(categories, newCategory)
+			categories[catIndex].value -= transactions[transactionId].amount
+			categories[newCatIndex].value += transactions[transactionId].amount
+			transactions[transactionId].categoryName = newCategory
+		if(option == 3):
+			newType = getIsIncome()
+			catIndex = getCategoryIndexByName(categories, transactions[transactionId].categoryName)
+			categories[catIndex].value -= transactions[transactionId].amount
+			if(newType):
+				categories[catIndex].value += transactions[transactionId].amount
+			else:
+				categories[catIndex].value -= transactions[transactionId].amount
+			transactions[transactionId].isIncome = newType
+		if(option == 4):
+			print("Are you sure?")
+			desition = getBool("1/0")
+			if(desition):
+				catIndex = getCategoryIndexByName(categories, transactions[transactionId].categoryName)
+				categories[catIndex].value -= transactions[transactionId].amount
+				del transactions[transactionId]
+				option = 0
+	waitForContinue()
 
 
 def openCategorie(): # should show it and give the option to update it or delete it
@@ -168,11 +224,16 @@ def getCategory():
 	inputStr = ""
 	while (inputStr == "" or inputStr == "-1"):
 		if(inputStr == ""):
-			inputStr = input("Please enter the name of the category: ")
+			print("Please enter the name of the category: ")
+			inputStr = input()
 		else:
-			print("Name not valid")
-			inputStr = input("Please enter the name of the category: ")
+			print("Name not valid. Please enter the name of the category: ")
+			inputStr = input()
 	return inputStr
+
+def getTransaction():
+	transactionId = getPositive("Please enter the transaction ID")
+	return transactionId
 
 def categoryExists(inputCategory, categories):
 	for index, category in categories.items():

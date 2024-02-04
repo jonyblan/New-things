@@ -3,7 +3,8 @@ from config import CANT_OPTIONS
 def getBool(msg):
 	inputInt = -1
 	while (inputInt != 0 and inputInt != 1):
-		inputStr = input(msg)
+		print(msg)
+		inputStr = input()
 		if(not validateInputInt(inputStr)):
 			inputInt = -1
 		else:
@@ -18,7 +19,8 @@ def numToBool(num):
 def getPositive(msg):
 	inputInt = -1
 	while (inputInt < 1):
-		inputStr = input(msg)
+		print(msg)
+		inputStr = input()
 		if(not validateInputInt(inputStr)):
 			inputInt = -1
 		else:
@@ -39,6 +41,14 @@ def validateInputInt(input):
 		return True
 	except ValueError:
 		return False
+
+def getInt(msg, errorMsg):
+	print(msg)
+	num = input()
+	while(not validateInputInt(num)):
+		print(errorMsg)
+		num = input()
+	return (int(num))
 
 def waitForContinue():
 	input("Please press enter to continue...")
