@@ -196,7 +196,7 @@ def openTransaction(transactions, categories): # should show it and give the opt
 	waitForContinue()
 
 
-def openCategorie(): # should show it and give the option to update it or delete it
+def openCategorie(): # should show it and give the option to update it
 	notDone("openCategorie")
 
 def defaultAnalize():
