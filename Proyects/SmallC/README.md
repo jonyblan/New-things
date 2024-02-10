@@ -1,0 +1,1 @@
+Some small proyects I made in the second semester of 2023 during the syllabus of Imperative Programming, and some that I'll be progressing further in the future.
