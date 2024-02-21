@@ -2,7 +2,7 @@ var food;
 
 function setup() {
     // Set up the canvas
-    createCanvas(windowWidth-100, windowHeight);
+    createCanvas(windowWidth-100, windowHeight-100);
     background(0);
     // Create a new Snake object
     s = new Snake();
