@@ -1,3 +1,4 @@
+/*
 var food;
 
 function setup() {
@@ -32,6 +33,7 @@ function draw() {
     if (s.eat(food)) {
         // Pick a new location for the food
         pickLocation();
+		s.createPath();
     }
     // Check for game over
     s.death();
@@ -43,16 +45,32 @@ function draw() {
     fill(255, 0, 100);
     rect(food.x, food.y, scl, scl);
 }
+*/
 
-function keyPressed() {
-    // Change the snake's direction based on arrow key input
-    if (keyCode === UP_ARROW) {
-        s.dir(0, -1);
-    } else if (keyCode === DOWN_ARROW) {
-        s.dir(0, 1);
-    } else if (keyCode === RIGHT_ARROW) {
-        s.dir(1, 0);
-    } else if (keyCode === LEFT_ARROW) {
-        s.dir(-1, 0);
-    }
+let cantSquares = 30;
+let snake;
+let food;
+let board = [];
+let frames = 10;
+
+function setup(){
+	createCanvas(cantSquares * 20, cantSquares * 20);
+	snake = new Snake(width / cantSquares, cantSquares);
+	for (let i = 0; i < cantSquares; i++) {
+		board[i] = [];
+		for (let j = 0; j < cantSquares; j++) {
+			board[i][j] = 0;
+		}
+	}
+	frameRate(frames);
+}
+
+function draw(){
+	background(0);
+	snake.show(board);
+	if (snake.update(board) < 0) {
+		console.log("Game Over");
+		noLoop(); // game over
+	}
+
 }
