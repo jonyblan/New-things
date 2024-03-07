@@ -1,3 +1,8 @@
+// the logic of the lazy bot is simple. Just go around the screen in a defined path
+// until you die. It works, but it's slow. I'll do the calculations later
+// when I have a bunch of bots set up
+
+
 function checkTopRightCorner(headPos, cantSquaresX){
 	let newInstructions = [];
 	

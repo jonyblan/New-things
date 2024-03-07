@@ -113,10 +113,12 @@ class Snake{
 
 	show(squareSize){
 		let len = this.length;
-		for(let i = 0; i < len; i++){
+		for(let i = 0; i < len - 1; i++){
 			fill(255);
 			rect(this.tail[i].x * squareSize, this.tail[i].y * squareSize, squareSize - 1, squareSize - 1);
 		}
+		fill(0, 255, 0);
+		rect(this.tail[len - 1].x * squareSize, this.tail[len - 1].y * squareSize, squareSize - 1, squareSize - 1);
 	}
 
 	moveHead(){
@@ -281,7 +283,7 @@ class Board{
 		this.snake.analizeKeyPressed();
 		let boardValues = this.getBoardValues();
 		if(this.instructions === undefined || this.instructions.length == 0){
-			this.instructions = botTurnLazy(this.instructions, boardValues);
+			this.instructions = botTurnLazyOptimized(this.instructions, boardValues);
 		}
 		this.makeInstruction();
 		let answer = this.checkCollitions(this.cantSquaresX, this.cantSquaresY, this.snake);

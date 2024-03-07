@@ -1,8 +1,8 @@
 let cantSquaresX = 30;
 let cantSquaresY = 30;
-let squareSize = 20;
+let squareSize = 25;
 let board;
-let frames = 600;
+let frames = 60;
 
 function setup(){
 	createCanvas(cantSquaresX * squareSize, cantSquaresY * squareSize);
