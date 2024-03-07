@@ -1,145 +1,86 @@
-/*
-// Variable to represent the snake
-var s;
-// Scale for the size of each "cell" in the grid
-var scl = 20;
+const HEAD_CODE = 1, BODY_CODE = 2, FOOD_CODE = 4, NOTHING_CODE = 0;
 
-// Snake constructor function
-class Snake{
-	constructor(){
-		// Initial position and speed of the snake
-		this.x = 0;
-		this.y = 0;
-		this.xspeed = 1;
-		this.yspeed = 0;
-		// Total length of the snake
-		this.total = 0;
-		// Array to store the snake's tail segments
-		this.tail = [];
+class Tail{
+	constructor(x, y, index){
+		this.x = x;
+		this.y = y;
+		this.index = index;
 	}
-
-    // Method to check if the snake eats the food
-    eat(pos) {
-        // Calculate distance between snake head and food
-        var d = dist(this.x, this.y, pos.x, pos.y);
-        if (d < 1) {
-            this.total++;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Method to change the snake's direction
-    dir(x, y){
-        this.xspeed = x;
-        this.yspeed = y;
-    }
-
-    // Method to check for collision with itself
-    death() {
-        // Loop through each tail segment
-        for (var i = 0; i < this.tail.length; i++) {
-            var pos = this.tail[i];
-            var d = dist(this.x, this.y, pos.x, pos.y);
-            // If the distance is less than 1, the snake collided with itself
-            if (d < 1) {
-                console.log('starting over');
-                this.total = 0;
-                this.tail = [];
-            }
-        }
-    }
-
-    // Method to update the snake's position
-    update(){
-        // Move the tail segments
-        for (var i = 0; i < this.tail.length - 1; i++) {
-            this.tail[i] = this.tail[i + 1];
-        }
-        // Add a new tail segment if the snake has eaten food
-        if (this.total >= 1) {
-            this.tail[this.total - 1] = createVector(this.x, this.y);
-        }
-
-        // Move the snake's head
-        this.x = this.x + this.xspeed * scl;
-        this.y = this.y + this.yspeed * scl;
-
-        // Constrain the snake's position within the canvas boundaries
-        this.x = constrain(this.x, 0, width - scl);
-        this.y = constrain(this.y, 0, height - scl);
-    }
-
-    // Method to display the snake
-    show(){
-        fill(255);
-        // Draw each tail segment
-        for (var i = 0; i < this.tail.length; i++) {
-            rect(this.tail[i].x, this.tail[i].y, scl, scl);
-        }
-        // Draw the snake's head
-        rect(this.x, this.y, scl, scl);
-    }
 }
-*/
 
-// they're declared in binary so its easy to check for collitions
-const HEAD_CODE = 1, BODY_CODE = 2, TAIL_CODE = 4, FOOD_CODE = 8;
-
-class Snake{
-	constructor(cantSquares, squareSize){
-		// board coordinates. This mostly saves on the snake's head and tail position is also
-		// stored on the board, but having it here saves on time as it doesnt have to iterate
-		// through all the board to find the head and the tail (which are the most used points)
-		this.xHead = Math.floor(cantSquares / 2);
-		this.yHead = Math.floor(cantSquares / 2);
-		this.xTail = Math.floor(cantSquares / 2);
-		this.yTail = Math.floor(cantSquares / 2) - 2;
-
-		// again, cantSquares and squareSize can be passed or calculated with board.lenght
-		// but having them here saves time
-		this.cantSquares = cantSquares;
-		this.squareSize = squareSize;
-
-		this.framePassed = false;
-
-		this.length = 3;
-		this.speed = [1, 0];
+class Food{
+	constructor(){
+		this.x;
+		this.y;
 	}
 
-	showSnakePart(i, j){
-		fill(255);
-		rect(i * this.squareSize, j * this.squareSize, this.squareSize, this.squareSize);
+	getRandomNum(maxNum){
+		return Math.floor(Math.random() * maxNum);
 	}
 
-	showFood(i, j){
-		fill(255, 0, 0);
-		ellipseMode(CENTER);
-		ellipse(i * this.squareSize, j * this.squareSize, this.squareSize / 2);
+	checkSnakeFoodCollition(snake){
+		if(snake.tail[snake.length - 1].x == this.x && snake.tail[snake.length - 1].y == this.y){
+			return true;
+		}
+		return false;
 	}
 
-	show(board){
-		for (let i = 0; i < this.cantSquares; i++) {
-			for (let j = 0; j < this.cantSquares; j++) {
-				if (board[i][j] & HEAD_CODE || board[i][j] & BODY_CODE || board[i][j] & TAIL_CODE) { // snake
-					this.showSnakePart(i, j);
-				}
-				if (board[i][j] == FOOD_CODE) {
-					this.showFood(i, j);
-				}
+	getRandomPositions(cantSquaresX, cantSquaresY){
+		let positions = [];
+		positions[0] = this.getRandomNum(cantSquaresX);
+		positions[1] = this.getRandomNum(cantSquaresY);
+
+		return positions;
+	}
+
+	checkSnakeBodyFoodCollition(snake){
+		let len = snake.tail.length;
+		for(let i = 0; i < len; i++){
+			if(snake.tail[i].x == this.x && snake.tail[i].y == this.y){
+				return true;
 			}
 		}
+		return false;
 	}
 
-	checkCollitions(board){
-		if (board[this.xHead][this.yHead] == HEAD_CODE + BODY_CODE) { // collition between head and body
-			return -2;
+	moveFoodToRandom(cantSquaresX, cantSquaresY, snake){
+		let positions = [];
+		let continueTrying = true;
+
+		// checks that the position is not inside the snake
+		while(continueTrying){
+			positions = this.getRandomPositions(cantSquaresX - 1, cantSquaresY - 1);
+			this.x = positions[0];
+			this.y = positions[1];
+			continueTrying = this.checkSnakeBodyFoodCollition(snake);
 		}
-		if (board[this.xHead][this.yHead] == HEAD_CODE + TAIL_CODE) { // collition between head and food
-			return 1;
-		}
-		return 0; // no collition
+	}
+
+	show(squareSize){
+		fill(255, 0, 0);
+		ellipse(this.x * squareSize + squareSize / 2, this.y * squareSize + squareSize / 2, squareSize * 0.9);
+	}
+}
+
+class Snake{
+	constructor(cantSquaresX, cantSquaresY){
+		this.length = 3;
+		this.speed = [1, 0];
+
+		// declare the starting body of the snake
+		// the tail array will contain all of the snake's body parts
+		// and the index would go from 0 to its lenght - 1,
+		// also, its first index would have its tail, and its last would
+		// have the head for easy use
+		let xHead = this.length - 1;
+		let yHead = cantSquaresY - 1;
+		this.tail = [];
+		let lastStart = new Tail(xHead - 2, yHead, this.length - 3);
+		let middleStart = new Tail(xHead - 1, yHead, this.length - 2);
+		let firstStart = new Tail(xHead, yHead, this.length - 1);
+		this.tail.push(lastStart);
+		this.tail.push(middleStart);
+		this.tail.push(firstStart);
 	}
 
 	// change the direction that the snake's head is moving
@@ -170,51 +111,187 @@ class Snake{
 		}
 	}
 
-	// checks that the new head's position is valid, and moves it
-	checkBoundaries(){
-		if(	this.xHead + this.speed[0] > this.cantSquares - 1 ||
-			this.xHead + this.speed[0] < 0 ||
-			this.yHead + this.speed[1] > this.cantSquares - 1 ||
-			this.yHead + this.speed[1] < 0)
+	show(squareSize){
+		let len = this.length;
+		for(let i = 0; i < len; i++){
+			fill(255);
+			rect(this.tail[i].x * squareSize, this.tail[i].y * squareSize, squareSize - 1, squareSize - 1);
+		}
+	}
+
+	moveHead(){
+		let newX = this.tail[this.length - 1].x + this.speed[0];
+		let newY = this.tail[this.length - 1].y + this.speed[1];
+		let newBody = new Tail(newX, newY, this.length);
+		this.tail.push(newBody);
+	}
+
+	moveTail(){
+		this.tail.splice(0, 1);
+	}
+
+	update(answer){
+		let moveTail = false;
+		if(answer != 2){
+			moveTail = true;
+		}
+		this.moveHead();
+		if(moveTail){
+			this.moveTail();
+		}
+		else{
+			this.length++;
+		}
+	}
+
+	checkSnakeBorderCollition(cantSquaresX, cantSquaresY){
+		let x = this.tail[this.length - 1].x, y = this.tail[this.length - 1].y;
+
+		if(	x < 0 ||
+			x > cantSquaresX - 1 ||
+			y < 0 ||
+			y > cantSquaresY - 1)
 			{
-				return 0; // head is outside of the board, game over
+				console.log("Snake crashed with the border");
+				return true; // head is outside of the board, game over
 			}
-		// move the head of the snake by the speed
-		this.xHead += this.speed[0];
-		this.yHead += this.speed[1]; 
-		return 1;
+
+		return false;
 	}
 
-	moveHead(board){
-		let returnValue = 1;
-		board[this.xHead][this.yHead] = BODY_CODE; // where there was the head now its a body part
-		if( this.checkBoundaries(board) == 0) {
-			returnValue = -2;
+	checkSnakeSnakeCollition(){
+		let len = this.length;
+		for(let i = 0; i < len - 1; i++){
+			if(this.tail[i].x == this.tail[len - 1].x && this.tail[i].y == this.tail[len - 1].y){
+				console.log("Snake crashed with itself");
+				return true;
+			}
 		}
-		board[this.xHead][this.yHead] += HEAD_CODE; // the position of the head was changed
-		return returnValue;
+		return false;
+	}
+}
+
+class Board{
+	constructor(cantSquaresX, cantSquaresY, squareSize){
+		// the board contains a snake and a food object, and some control variables.
+		// The flow of the program is that the board contains broad methods that call
+		// snake and food methods, which do the logic
+		this.snake = new Snake(cantSquaresX, cantSquaresY);
+		this.food = new Food();
+		
+		// save some variables here to not evaluate them again later
+		this.cantSquaresX = cantSquaresX;
+		this.cantSquaresY = cantSquaresY;
+		this.squareSize = squareSize;
+
+		// create a 2d array with positions for future use
+		this.positions = [];
+		for (let i = 0; i < cantSquaresX; i++) {
+			this.positions[i] = [];
+			for(let j = 0; j < cantSquaresY; j++){
+				this.positions[i][j] = 0;
+			}
+		}
+
+		// initialize the food
+		this.food.moveFoodToRandom(cantSquaresX, cantSquaresY, this.snake);
+
+		// this is the brain of the snake. As soon as the snake reaches a certain point
+		// (could be eating food, getting out of instructions, detecting something on the
+		// enviroment, etc), new instructions will be given to it. Instructions will
+		// be in the format of [,], meaning the speed (direction) it should
+		// take in this move and future moves. It can be abandoned, changes in between, etc.
+		// I'll make a bunch of bots but all they're gonna know is:
+		// 1) Current instructions. 2) 2d array with
+		// all the information of the board (nothing, snake body, snake head or food).
+		// Using these elements, the bot will send back a list of instructions, until
+		// it dies
+		this.instructions = [];
 	}
 
-	moveTail(board, tailIsStill){
-		if(tailIsStill == 1){
-			return ;
+	checkCollitions(cantSquaresX, cantSquaresY, snake){
+		// answer is a 2 bit number, the first bit indicates a food eaten, the second 
+		// a collition that indicates the game is over
+		let answer = 0;
+		let gameOver = true;
+		
+		gameOver = this.snake.checkSnakeBorderCollition(cantSquaresX, cantSquaresY);
+		gameOver = gameOver || this.snake.checkSnakeSnakeCollition();
+		if(gameOver){
+			answer++;
+		}
+
+		if(this.food.checkSnakeFoodCollition(snake)){
+			this.food.moveFoodToRandom(cantSquaresX, cantSquaresY, snake);
+			answer += 2;
+		}
+
+		return answer;
+	}
+
+	getNothingValues(){
+		let boardValues = [];
+		for(let i = 0; i < this.cantSquaresX; i++){
+			boardValues[i] = [];
+			for(let j = 0; j < this.cantSquaresY; j++){
+				boardValues[i][j] = NOTHING_CODE;
+			}
+		}
+		return boardValues;
+	}
+
+	getFoodValue(boardValues){
+		boardValues[this.food.x][this.food.y] = FOOD_CODE;
+		return boardValues;
+	}
+
+	getSnakeValues(boardValues){
+		let len = this.snake.tail.length;
+		for(let i = 0; i < len - 1; i++){
+			boardValues[this.snake.tail[i].x][this.snake.tail[i].y] = BODY_CODE;
+		}
+		let headX = Math.min(this.cantSquaresX - 1, this.snake.tail[len - 1].x);
+		let headY = Math.min(this.cantSquaresY - 1, this.snake.tail[len - 1].y);
+		boardValues[headX][headY] = HEAD_CODE;
+
+		return boardValues;
+	}
+
+	getBoardValues(){
+		let boardValues = [];
+
+		boardValues = this.getNothingValues();
+		boardValues = this.getFoodValue(boardValues);
+		boardValues = this.getSnakeValues(boardValues);
+		
+		return boardValues;
+	}
+
+	makeInstruction(){
+		if(!(this.instructions === undefined)){
+			if(!(this.instructions.length == 0)){
+				this.snake.speed[0] = this.instructions[0][0];
+				this.snake.speed[1] = this.instructions[0][1];
+				this.instructions.splice(this.instructions, 1);
+			}
 		}
 	}
 
-	move(board, tailIsStill){ // if tailIsStill == 1, the tail doesnt move, and the snake gains 1 lenght
-		let returnValue = this.moveHead(board);
-		this.moveTail(board, tailIsStill);
-		this.framePassed = true;
-		return returnValue;
+	update(){
+		this.snake.analizeKeyPressed();
+		let boardValues = this.getBoardValues();
+		if(this.instructions === undefined || this.instructions.length == 0){
+			this.instructions = botTurnLazy(this.instructions, boardValues);
+		}
+		this.makeInstruction();
+		let answer = this.checkCollitions(this.cantSquaresX, this.cantSquaresY, this.snake);
+		this.snake.update(answer);
+
+		return answer;
 	}
 
-	update(board){
-		let returnValue = 1;
-		this.analizeKeyPressed();
-		if(this.speed[0] != 0 || this.speed[1] != 0){
-			returnValue = this.checkCollitions(board);
-			returnValue += this.move(board, returnValue);
-		}
-		return returnValue;
+	show(){
+		this.snake.show(this.squareSize);
+		this.food.show(this.squareSize);
 	}
 }
