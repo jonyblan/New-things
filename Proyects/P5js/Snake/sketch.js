@@ -1,6 +1,6 @@
 let cantSquaresX = 30;
 let cantSquaresY = 30;
-let squareSize = 25;
+let squareSize = 20;
 let board;
 let frames = 60;
 
