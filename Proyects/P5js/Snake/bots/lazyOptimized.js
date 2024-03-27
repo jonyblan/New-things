@@ -1,8 +1,5 @@
 // the lazy optimized bot is the same as the lazy bot, but it cuts unnecesary travel time
 // by cutting horizontally the screen to go to the next food.
-// this isnt always optimal, as a short term gain can be a long term loss
-// so worthSaving functions are implemented to see when its better to
-// save time, and when not
 
 function moveUp(){
 	return [0, -1];
@@ -20,7 +17,6 @@ function moveRight(){
 	return [1, 0];
 }
 
-// If you're in the top right corner, go left
 function checkTopRightCorner(headPos, cantSquaresX){
 	let newInstructions = [];
 	
@@ -31,7 +27,6 @@ function checkTopRightCorner(headPos, cantSquaresX){
 	return newInstructions;
 }
 
-// If you're in the top left corner, go down
 function checkTopLeftCorner(headPos){
 	let newInstructions = [];
 
@@ -42,7 +37,6 @@ function checkTopLeftCorner(headPos){
 	return newInstructions;
 }
 
-// If you're in the right wall (not the top one) go up and then left
 function checkRightWall(headPos, cantSquaresX){
 	let newInstructions = [];
 
@@ -54,8 +48,6 @@ function checkRightWall(headPos, cantSquaresX){
 	return newInstructions;
 }
 
-// If you're almost in the left wall (not in the top lane)
-// save space for going down later by going up and then right
 function checkAlmostLeftWall(headPos){
 	let newInstructions = [];
 
@@ -67,9 +59,6 @@ function checkAlmostLeftWall(headPos){
 	return newInstructions;
 }
 
-// if you're in the bottom left wall, go right
-// (2 times to prevent the checkAlmostLeftWall() function
-// from activating in the next frame)
 function checkBottomLeftCorner(headPos, cantSquaresY){
 	let newInstructions = [];
 
@@ -89,109 +78,55 @@ function areInstructionsClear(newInstructions, currentInstructions){
 				currentInstructions.length == 0));
 }
 
-// returns true if the benefit of saving space
-// is greater than its cost
-function worthSavingUpGoUp(boardValues, headPos, cantSquaresY){
-	return true;
-}
-
-// returns true if the benefit of saving space
-// is greater than its cost
-function worthSavingUpGoDown(boardValues, headPos, cantSquaresY){
-	return true;
-}
-
-// returns true if the benefit of saving space
-// is greater than its cost
-function worthSavingDown(boardValues, headPos, cantSquaresY){
-	let lastBody = 0;
-	for(let i = 0; i < cantSquaresY; i++){
-		if(boardValues[1][i] != 0){
-			lastBody = i;
+function saveSpaceUp(boardValues, headPos, foodPos, cantSquaresX){
+	let newInstructions = [];
+	
+	if(headPos[0] == cantSquaresX - 1){
+		if(headPos[1] < foodPos[1]){
+			if(boardValues[0][headPos[1]] == 0){
+				let i;
+				newInstructions[0] = moveUp();
+				for(i = 0; i < cantSquaresX - 1; i++){
+					newInstructions[i + 1] = moveLeft();
+				}
+				newInstructions[i + 1] = moveDown();
+			}
+		}
+		else if(headPos[1] > foodPos[1]){
+			let sum = 0;
+			for(let i = 0; i < headPos[1]; i++){
+				sum += boardValues[cantSquaresX - 1][i];
+			}
+			if(sum){
+				return;
+			}
+			console.log("Save up 2: ", boardValues);
+			let pseudoFoodY, i, notCrash = true;
+			if(foodPos[1] % 2 == 0){
+				pseudoFoodY = foodPos[1] - 1;
+			}
+			else{
+				pseudoFoodY = foodPos[1];
+			}
+			let dif = headPos[1] - pseudoFoodY;	
+			for(i = 0; i < dif - 1 && notCrash; i++){
+				newInstructions[i] = moveUp();
+			}
+			newInstructions[i] = moveLeft();
 		}
 	}
 
-	if((cantSquaresY - lastBody / 2) > (cantSquaresY - headPos[1])){
-		return true;
-	}
-	return false;
-}
-
-function saveSpaceUpGoUp(boardValues, headPos, foodPos, cantSquaresX){
-	let newInstructions = [];
-
-	// if there's a body blocking the way
-	for(let i = foodPos[1]; i < headPos[1]; i++){
-		if(boardValues[cantSquaresX - 1][i]){
-			return;
-		}
-	}
-
-	let pseudoFoodY = foodPos[1], i;
-
-	if(foodPos[1] % 2 == 0){
-		pseudoFoodY = foodPos[1] - 1;
-	}
-
-	let dif = headPos[1] - pseudoFoodY;	
-
-	// go up until you get to the food's line
-	for(i = 0; i < dif - 1; i++){
-		newInstructions[i] = moveUp();
-	}
-	// and then turn left
-	newInstructions[i] = moveLeft();
-
 	return newInstructions;
 }
 
-function saveSpaceUpGoDown(boardValues, headPos, cantSquaresX){
+function saveSpaceDown(boardValues, headPos, foodPos, cantSquaresX){
 	let newInstructions = [];
-
-	if(boardValues[0][headPos[1]] != 0){
-		return newInstructions;
-	}
-	let i;
-	newInstructions[0] = moveUp();
-	for(i = 0; i < cantSquaresX - 1; i++){
-		newInstructions[i + 1] = moveLeft();
-	}
-	newInstructions[i + 1] = moveDown();
-
-	return newInstructions;
-}
-
-function saveSpaceUp(boardValues, headPos, foodPos, cantSquaresX, cantSquaresY){
-	let newInstructions = [];
-
-	// if the head isnt in the right wall, dont do anything
-	if(headPos[0] != cantSquaresX - 1){
-		return newInstructions;
-	}
-
-	// if the food is down of the head
-	if(headPos[1] < foodPos[1] && worthSavingUpGoDown(boardValues, headPos, cantSquaresY)){
-		newInstructions = saveSpaceUpGoDown(boardValues, headPos, cantSquaresX);
-	}
-	// if the food is up from the head
-	else if(headPos[1] > foodPos[1] && worthSavingUpGoUp(boardValues, headPos, cantSquaresY)){
-		newInstructions = saveSpaceUpGoUp(boardValues, headPos, foodPos, cantSquaresX);
-	}
-
-	return newInstructions;
-}
-
-function saveSpaceDown(boardValues, headPos, foodPos, cantSquaresX, cantSquaresY){
-	let newInstructions = [];
-
 	if(headPos[0] == 0){
 		if(headPos[1] >= foodPos[1]){
 			if(headPos[1] % 2 == 1){
 				if(boardValues[1][headPos[1]] == 0 && boardValues[cantSquaresX - 1][headPos[1]] == 0){
-					if(worthSavingDown(boardValues, headPos, cantSquaresY)){
-						newInstructions[0] = moveRight();
-						newInstructions[1] = moveRight();
-					}
+					newInstructions[0] = moveRight();
+					newInstructions[1] = moveRight();
 				}
 			}
 		}
@@ -217,7 +152,6 @@ function botTurnLazyOptimized(currentInstructions, boardValues){
 			}
 		}
 	}
-
 	newInstructions = checkTopRightCorner(headPos, cantSquaresX);
 
 	if(areInstructionsClear(newInstructions, currentInstructions)){
@@ -225,7 +159,7 @@ function botTurnLazyOptimized(currentInstructions, boardValues){
 	}
 
 	if(areInstructionsClear(newInstructions, currentInstructions)){
-		newInstructions = saveSpaceUp(boardValues, headPos, foodPos, cantSquaresX, cantSquaresY);
+		newInstructions = saveSpaceUp(boardValues, headPos, foodPos, cantSquaresX);
 	}
 
 	if(areInstructionsClear(newInstructions, currentInstructions)){
@@ -241,7 +175,7 @@ function botTurnLazyOptimized(currentInstructions, boardValues){
 	}
 
 	if(areInstructionsClear(newInstructions, currentInstructions)){
-		newInstructions = saveSpaceDown(boardValues, headPos, foodPos, cantSquaresX, cantSquaresY);
+		newInstructions = saveSpaceDown(boardValues, headPos, foodPos, cantSquaresX);
 	}
 
 	return newInstructions;
