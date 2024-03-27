@@ -35,7 +35,7 @@ class Rocket{
 		if(this.collition(target)){
 			return 1;
 		}
-		for(let i = 0; i < 400; i++){
+		for(let i = 0; i < 100; i++){
 			let distance = getDistance(this.x, this.y, obstacles[i].x, obstacles[i].y)
 			if(
 				distance < obstacles[i].radius/2 ||

@@ -1,5 +1,5 @@
 // Declare any global variables here
-let pixSize = 8;
+let pixSize = 15;
 let winHeight = 800;
 let winWidth = 1400;
 winHeight -= winHeight%pixSize;

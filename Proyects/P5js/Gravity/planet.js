@@ -60,7 +60,7 @@ class Planet{
 	}
 
 	show(currentX, currentY){
-		fill(255);		
+		fill(random(0, 255), random(0, 255), random(0, 255));		
 		ellipse(currentX, currentY, this.radius);
 		for(let i = 0; i < this.planetsOrbitingAround.length; i++){
 			let nextRo = this.planetsOrbitingAround[i].ro, nextTheta = this.planetsOrbitingAround[i].theta

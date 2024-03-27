@@ -3,7 +3,7 @@ let lifeSpan = 0;
 let population;
 let target;
 let obstacles = [];
-let cantObstacles = 400;
+let cantObstacles = 100;
 
 function setup(){
 	createCanvas(1366, 771);
