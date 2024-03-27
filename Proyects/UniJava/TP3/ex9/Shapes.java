@@ -24,7 +24,6 @@ public class Shapes {
 		System.out.println(String.format("%.2f", myCircle.area()));
 	}
 
-
 	public abstract static class Shape {
 		public abstract double perimeter();
 		public abstract double area();
@@ -159,25 +158,16 @@ public class Shapes {
 		}
 	}
 
-	public static class Circle extends Shape{
+	public static class Circle extends Ellipse{
 		private Point center;
 		private double radius;
 
 		public Circle(Point center, double radius){
-			this.center = center;
-			this.radius = radius;
+			super(center, radius, radius);
 		}
 
 		public void showCircle(){
-			System.out.println("Center: { " + this.center.x + " , " + this.center.y + " } , Radius: " + this.radius);
-		}
-
-		public double perimeter(){
-			return (Math.PI * this.radius * 2);
-		}
-
-		public double area(){
-			return (Math.pow(this.radius, 2) * Math.PI);
+			System.out.println("Center: { " + this.center + " , " + this.center + " } , Radius: " + this.radius);
 		}
 	}
 }
