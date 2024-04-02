@@ -1,0 +1,26 @@
+Normal:
+
+j: down line
+k: up line
+l: right
+w: right one word
+h: left
+b: left one word
+d: delete
+u: undo
+
+Insert:
+
+i: insert left
+a: insert right 
+
+Visual:
+
+v: visual mode
+V: visual line mode
+y: copy
+p: paste
+
+Command: 
+
+w: Save file
