@@ -1,6 +1,6 @@
 public class CentralAlarmSystem {
 	private EmergencyServices[] emergencyServices;
-
+	
 	public CentralAlarmSystem(EmergencyServices[] emergencyServices) {
 		setEmergencyServices(emergencyServices);
 	}

@@ -1,4 +1,5 @@
 public abstract class Element {
+	
 	public abstract String getContents();
 
 	@Override
@@ -6,21 +7,19 @@ public abstract class Element {
 		return getContents();
 	}
 
-	public Element above(Element element){
-		Element aux = new BinaryElement(this, element);
-		return aux;
+	public Element above(Element elem){
+		return new BinaryElement(this, elem);
 	}
 
-	public Element below(Element element){
-		Element aux = new BinaryElement(element, this);
-		return aux;
+	public Element below(Element elem){
+		return new BinaryElement(elem, this);
 	}
 
 	public Element repeat(int cantTimes){
-		Element aux = this;
-		for(int i = 0; i < cantTimes - 1; i++){
-			aux = new BinaryElement(aux, this);
+		Element current = this;
+		for(int i = cantTimes; i > 1; i--){
+			current = new BinaryElement(current, current);
 		}
-		return aux;
+		return current;
 	}
 }

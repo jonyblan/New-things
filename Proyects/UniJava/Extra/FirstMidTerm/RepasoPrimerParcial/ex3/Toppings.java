@@ -1,22 +1,23 @@
-public enum Toppings implements Apply{
-	ExtraCheese("con Extra queso", 20),
-	Tomato("con Tomate", 30),
-	Onion("con Cebolla", 10);
+public enum Toppings implements Addable{
+	CHEESE(20, "con Extra Queso"),
+	TOMATO(30, "con Tomate"),
+	ONION(10, "con Cebolla");
 
-	private String msg;
-	private int price;
+	private double price;
+	private String name;
 
-	Toppings(String msg, int price){
-		this.msg = msg;
+	Toppings(double price, String name){
 		this.price = price;
+		this.name = name;
 	}
 
 	@Override
-	public int apply(){
-		return this.price;
+	public String getName(){
+		return this.name;
 	}
 
-	public String getMsg(){
-		return this.msg;
+	@Override
+	public double getValue(){
+		return this.price;
 	}
 }

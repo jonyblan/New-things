@@ -10,7 +10,7 @@ public class Sensor {
 	public void motionDetected() {
 		System.out.println(toString() + " detectó movimiento");
 	}
-
+	
 	@Override
 	public String toString() {
 		return String.format("Sensor %s (ID: %d)", name, id);

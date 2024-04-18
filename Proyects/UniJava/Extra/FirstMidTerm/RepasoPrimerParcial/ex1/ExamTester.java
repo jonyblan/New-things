@@ -1,4 +1,4 @@
-import java.util.Arrays;
+import java.util.*;
 
 public class ExamTester{
 	public static void main(String args[]){
@@ -9,9 +9,8 @@ public class ExamTester{
 		System.out.println("Enrolled Students: " + Arrays.toString(exam.getEnrolledStrudents()));
 		exam.unenroll("Matias");
 		System.out.println("Enrolled Students: " + Arrays.toString(exam.getEnrolledStrudents()));
-		
 		System.out.println("##########");
-		
+
 		UniqueExam uniqueExam = new UniqueExam("Primer Parcial POO");
 		uniqueExam.enroll("Matias");
 		uniqueExam.enroll("Matias");
@@ -19,7 +18,6 @@ public class ExamTester{
 		System.out.println("Enrolled Students: " + Arrays.toString(uniqueExam.getEnrolledStrudents()));
 		uniqueExam.unenroll("Matias");
 		System.out.println("Enrolled Students: " + Arrays.toString(uniqueExam.getEnrolledStrudents()));
-		
 		System.out.println("##########");
 		
 		LimitedExam limitedExam = new LimitedExam("TPE POD", 2);

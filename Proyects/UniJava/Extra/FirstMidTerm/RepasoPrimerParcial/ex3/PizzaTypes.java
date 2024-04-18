@@ -1,21 +1,22 @@
-public enum PizzaTypes implements Apply{
-	Grill("a la parrilla", 150),
-	Oven("al horno", 100);
+public enum PizzaTypes implements Addable{
+	OVEN(100.0, "al horno"),
+	GRILL(150.0, "a la parrilla");
 
-	private String msg;
-	private int price;
+	private double price;
+	private String name;
 
-	PizzaTypes(String msg, int price){
-		this.msg = msg;
+	PizzaTypes(double price, String name){
 		this.price = price;
+		this.name = name;
 	}
 
 	@Override
-	public int apply(){
-		return this.price;
+	public String getName(){
+		return this.name;
 	}
 
-	public String getMsg(){
-		return this.msg;
+	@Override
+	public double getValue(){
+		return this.price;
 	}
 }

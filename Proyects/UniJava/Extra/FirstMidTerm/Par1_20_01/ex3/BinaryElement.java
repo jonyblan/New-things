@@ -1,6 +1,6 @@
 public class BinaryElement extends Element{
-	private final Element above, below;
-	
+	private Element above, below;
+
 	public BinaryElement(Element above, Element below){
 		this.above = above;
 		this.below = below;
@@ -8,9 +8,10 @@ public class BinaryElement extends Element{
 
 	@Override
 	public String getContents(){
-		String ret = this.above.getContents();
-		ret += "\n";
-		ret += this.below.getContents();
-		return ret;
+		StringBuilder str = new StringBuilder();
+		str.append(above.getContents());
+		str.append("\n");
+		str.append(below.getContents());
+		return str.toString();
 	}
 }

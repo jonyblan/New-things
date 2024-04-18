@@ -1,29 +1,26 @@
 public class AlarmSensor extends Sensor{
 	private boolean activated;
-	private AlarmSystem alarmSystem;
+	private AlarmSystem as;
 
-	public AlarmSensor(int id, String name, AlarmSystem alarmSystem){
+	public AlarmSensor(int id, String name, AlarmSystem as){
 		super(id, name);
 		this.activated = false;
-		this.alarmSystem = alarmSystem;
+		this.as = as;
 	}
 
 	@Override
 	public void motionDetected(){
 		if(!activated){
-			return ;
+			super.motionDetected();
 		}
-		super.motionDetected();
-		alarmSystem.callEmergency();
+		
 	}
 
 	public void activate(){
-		System.out.println(super.toString() + " activado");
-		activated = true;
+		this.activated = true;
 	}
 
 	public void deactivate(){
-		System.out.println(super.toString() + " desactivado");
-		activated = false;
+		this.activated = false;
 	}
 }

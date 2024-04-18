@@ -1,16 +1,15 @@
 public class TextElement extends Element{
-	private String value;
-	
-	public TextElement(String value){
-		this.value = value;
+	private String data;
+	public TextElement(String data){
+		this.data = data;
+	}
+
+	public void setText(String data){
+		this.data = data;
 	}
 
 	@Override
 	public String getContents(){
-		return value;
-	}
-
-	public void setText(String value){
-		this.value = value;
+		return data;
 	}
 }

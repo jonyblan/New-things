@@ -1,22 +1,16 @@
 public enum EmergencyServices{
-	POLICE("Policia", 911),
-	FIRE("Bomberos", 100),
-	HEALTH("Ambulancia", 107);
+	POLICE("911", "Policia"),
+	HEALTH("107", "Ambulancia"),
+	FIRE("100", "Bomberos");
 
-	private String name;
-	private int number;
+	private String num, name;
 
-	EmergencyServices(String name, int number){
+	public EmergencyServices(String num, String name){
+		this.num = num;
 		this.name = name;
-		this.number = number;
 	}
 
 	public void call(){
-		System.out.println("Llamando a " + toString());
-	}
-
-	@Override
-	public String toString(){
-		return String.format("%s al %d", this.name, this.number);
+		System.out.println(String.format("Llamando a %s al %s", name, num));
 	}
 }

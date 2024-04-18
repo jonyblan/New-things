@@ -1,49 +1,27 @@
-import java.util.Arrays;
-
 public class AlarmSystem{
+	private CentralAlarmSystem cm;
 	private String name;
-	private CentralAlarmSystem centralAlarmSystem;
-	private int currentId; // has the next id (currentId = 4 --> there are 4 sensors [0 - 3])
-	private AlarmSensor alarmSensors[];
-	private final int STARTING_SIZE = 5;
-	private final int STEP = 2;
+	private AlarmSensor sensors[];
+	private final int INI_SIZE = 2;
+	private final int STEP = 1;
+	private int currentIndex = 0;
 
-	public AlarmSystem(CentralAlarmSystem centralAlarmSystem, String name){
-		this.centralAlarmSystem = centralAlarmSystem;
+	public AlarmSystem(CentralAlarmSystem cm, String name){
+		this.cm = cm;
 		this.name = name;
-		this.currentId = 0;
-		this.alarmSensors = new AlarmSensor[STARTING_SIZE];
+		this.sensors[] = new AlarmSensor[INI_SIZE]; 
 	}
 
-	public AlarmSensor addAlarmSensor(String name){
-		if(currentId == alarmSensors.length){
+	public void addAlarmSensor(String name){
+		if(currentIndex + 1 < sensors.size){
 			resize();
 		}
-		alarmSensors[currentId] = new AlarmSensor(currentId, name, this);
-		currentId++;	
-		return alarmSensors[currentId-1];
+		sensors[currentIndex] = new AlarmSensor(currentIndex, name);
+		currentIndex++;
 	}
-
-	public void activate(){
-		System.out.println("Activando alarma de sensores de " + name);
-		for(int i = 0; i < currentId; i++){
-			alarmSensors[i].activate();
-		}
-	}
-
-	public void deactivate(){
-		System.out.println("Desctivando alarma de sensores de " + name);
-		for(int i = 0; i < currentId; i++){
-			alarmSensors[i].deactivate();
-		}
-	}
-
-	private void resize(){
-		alarmSensors = Arrays.copyOf(alarmSensors, currentId + STEP);
-	}
-
-	public void callEmergency(){
-		for(EmergencyServices es : centralAlarmSystem.getEmergencyServices()){
+	
+	public void callEmergencyServices(){
+		for(EmergencyServices es : CentralAlarmSystem){
 			es.call();
 		}
 	}
