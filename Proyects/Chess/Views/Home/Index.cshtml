@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Chess Board";
+}
+
+<head>
+	<link rel="stylesheet" href="~/css/chessboard.css" />
+</head>
+
+<div class="chessboard">
+    @for (int row = 0; row < 8; row++)
+    {
+        <div class="row">
+            @for (int col = 7; col >= 0; col--)
+            {
+                <div class="cell @( (row + col) % 2 == 0 ? "white" : "black")">
+                    @if (Model.BoardImages[row, col] != null)
+                    {
+                        <img src="./img/pieces/@Model.BoardImages[row, col]" alt="Chess Piece" />
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pieces = document.querySelectorAll('.piece');
+    pieces.forEach(piece => {
+        piece.addEventListener('click', function() {
+            const row = this.parentElement.getAttribute('data-row');
+            const col = this.parentElement.getAttribute('data-col');
+            fetch('/Home/RemovePiece', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `row=${row}&col=${col}`
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            });
+        });
+    });
+});
+</script>
