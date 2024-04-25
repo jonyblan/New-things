@@ -19,13 +19,16 @@ public class HomeController : Controller
 		return View(game); // Pass the game model to the view
 	}
 
+	/*
+	@ Maybe implement something to play against the computer
 	[HttpPost]
 	public IActionResult RemovePiece(int row, int col)
 	{
-		var game = new ChessGame();  // You might need to retrieve an existing game state instead
+		var game = new ChessGame(); // Here, you would ideally retrieve game state from session or database
 		game.ClearPiece(row, col);
-		return View("Index", game);  // Re-render the view with the updated game state
+		return Json(new { success = true });  // Return minimal JSON indicating success
 	}
+	*/
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

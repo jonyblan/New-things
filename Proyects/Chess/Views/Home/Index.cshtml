@@ -10,12 +10,12 @@
     @for (int row = 0; row < 8; row++)
     {
         <div class="row">
-            @for (int col = 7; col >= 0; col--)
+            @for (int col = 0; col < 8; col++)  // Fix this loop to increment correctly
             {
-                <div class="cell @( (row + col) % 2 == 0 ? "white" : "black")">
+                <div class="cell @( (row + col) % 2 == 0 ? "white" : "black")" data-row="@row" data-col="@col">
                     @if (Model.BoardImages[row, col] != null)
                     {
-                        <img src="./img/pieces/@Model.BoardImages[row, col]" alt="Chess Piece" />
+                        <img src="./img/pieces/@Model.BoardImages[row, col]" alt="Chess Piece" class="piece" />
                     }
                 </div>
             }
@@ -23,9 +23,10 @@
     }
 </div>
 
+<!--
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const pieces = document.querySelectorAll('.piece');
+    const pieces = document.querySelectorAll('.cell img'); // Reference to images within cells
     pieces.forEach(piece => {
         piece.addEventListener('click', function() {
             const row = this.parentElement.getAttribute('data-row');
@@ -45,3 +46,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+-->

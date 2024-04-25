@@ -1,44 +1,47 @@
+using Chess.Utilities;
+using Chess.Models;
+
 namespace Chess.Models{
     public class ChessGame{
         public string[,] BoardImages { get; set; }
 		public int[,] Board;
-		public string fen;
+		public List<Move> moves {get; set;}
+		public bool whiteToMove;
 
 		// TODO create a new type called piece
 
-		// TODO create a new type called move
-
-		public const int WHITE = 16;
-		public const int BLACK = 8;
-		public const int NOTHING = 0;
-		public const int PAWN = 1;
-		public const int KNIGHT = 2;
-		public const int BISHOP = 3;
-		public const int ROOK = 4;
-		public const int QUEEN = 5;
-		public const int KING = 6;
+		public const int WHITE = Constants.WHITE;
+		public const int BLACK = Constants.BLACK;
+		public const int NOTHING = Constants.NOTHING;
+		public const int PAWN = Constants.PAWN;
+		public const int KNIGHT = Constants.KNIGHT;
+		public const int BISHOP = Constants.BISHOP;
+		public const int ROOK = Constants.ROOK;
+		public const int QUEEN = Constants.QUEEN;
+		public const int KING = Constants.KING;
 
         public ChessGame(){
             // Initialize the board and set up the game pieces
             BoardImages = new string[8, 8];
 			Board = new int[8, 8];
-			string initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-			iniBoard();
+			string initialFen = Constants.INITIAL_FEN_POSITION;
+			whiteToMove = true;
 
-			
+			IniBoard();
 
-			setBoardByFen(initialFen);
-			boardToBoardImages();
+			moves = new List<Move>();
+
+			moves = Move.GenerateMoves(this);
+
+			SetBoardByFen(initialFen);
+			BoardToBoardImages();
         }
 
 		public void ClearPiece(int row, int col) {
-			// Set the board position to NOTHING, indicating no piece
 			Board[row, col] = NOTHING;
-			// Update the corresponding image array
-			BoardImages[row, col] = null;
 		}
 
-		public void iniBoard(){
+		public void IniBoard(){
 			for(int i = 0; i < 8; i++){
 				for(int j = 0; j < 8; j++){
 					Board[i, j] = NOTHING;
@@ -46,7 +49,7 @@ namespace Chess.Models{
 			}
 		}
 
-		public void setBoardByFen(string fen){
+		public void SetBoardByFen(string fen){
 			int i = 0, row = 0, col = 0;
 
 			while(fen[i] != ' '){
@@ -100,7 +103,7 @@ namespace Chess.Models{
 			}
 		}
 
-		public void boardToBoardImages(){
+		public void BoardToBoardImages(){
 			for(int i = 0; i < 8; i++){
 				for(int j = 0; j < 8; j++){
 					switch(Board[i, j]){
