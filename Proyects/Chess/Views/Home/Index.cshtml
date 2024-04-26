@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="~/css/chessboard.css" />
 </head>
 
+<h1>@Model.moves.Count</h1>
 <div class="chessboard">
     @for (int row = 0; row < 8; row++)
     {
@@ -22,6 +23,12 @@
         </div>
     }
 </div>
+<h1>@Model.flags</h1>
+<div>
+<h1>@Model.moves[0].startSquare[0] @Model.moves[0].startSquare[1]</h1>
+<h1>@Model.moves[0].endSquare[0] @Model.moves[0].endSquare[1]</h1>
+</div>
+
 
 <!--
 <script>

@@ -37,6 +37,14 @@ namespace Chess.Models
 			this.flags = flags;
 		}
 
+		public Move(){
+			this.startSquare = new int[] {0, 0};
+			this.endSquare = new int[] {0, 0};
+			this.flags = 0;
+		}
+
+		/*
+
 		public static int validSquare(ChessGame cg, int row, int col){
 			// if the square doesnt exist
 			if(	row < 0 ||
@@ -66,20 +74,49 @@ namespace Chess.Models
 
 		public static List<Move> generatePawnMoves(ChessGame cg, int row, int col){
 			List<Move> moves = new List<Move>();
+
+			int multiplier = ((cg.Board[row, col] & WHITE) != 0) ? -1 : 1;
+
+			if(validSquare(cg, row + 1 * multiplier, col) == 0){
+				moves.Add(new Move(new int[] {row, col}, new int[] {row + 1 * multiplier, col}, cg.Board[row, col]));
+					if(validSquare(cg, row + 2 * multiplier, col) == 0){
+					moves.Add(new Move(new int[] {row, col}, new int[] {row + 2 * multiplier, col}, cg.Board[row, col]));
+				}
+			}
+
 			return moves;
 		}
 
-		public static List<Move> generateSlidingMoves(ChessGame cg, int row, int col, int[] direction, int startingRow, int startingCol){
+		public static List<Move> generateSlidingMoves(ChessGame cg, int row, int col, int[] direction, int startingRow, int startingCol, int flags){
 			List<Move> moves = new List<Move>();
 			row+=direction[0];
 			col+=direction[1];
 			int ret = validSquare(cg, row, col);
+			if(ret == 0){ // valid square
+				moves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, flags));
+				moves.AddRange(generateSlidingMoves(cg, row, col, direction, startingRow, startingCol, flags));
+				return moves;
+			}
+			if(ret == 1){ // out of bounds square
+				return moves;
+			}
+			if(ret == 2){ // square is occupied by a same colour piece
+				return moves;
+			}
+			if(ret == 3){ // square is occupied by a different colour piece
+				moves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, flags));
+				return moves;
+			}
 			return moves;
 		}
 
 		public static List<Move> generateMoveBySquare(ChessGame cg, int row, int col){
 			List<Move> moves = new List<Move>();
-			switch(cg.Board[row, col]){
+
+			int pieceType = cg.Board[row, col] & 7;
+			int colour = cg.Board[row, col] & 24;
+
+			switch(pieceType){
 				case PAWN:
 					moves = generatePawnMoves(cg, row, col);
 				break;
@@ -87,26 +124,26 @@ namespace Chess.Models
 					moves = generateKnightMoves(cg, row, col);
 				break;
 				case BISHOP:
-					moves = generateSlidingMoves(cg, row, col, new int[] {-1, -1}, row, col);
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, 1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, -1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 1}, row, col));
+					moves = generateSlidingMoves(cg, row, col, new int[] {-1, -1}, row, col, cg.Board[row, col]);
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, 1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, -1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 1}, row, col, cg.Board[row, col]));
 				break;
 				case ROOK:
-					moves = generateSlidingMoves(cg, row, col, new int[] {-1, 0}, row, col);
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 0}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, -1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, 1}, row, col));
+					moves = generateSlidingMoves(cg, row, col, new int[] {-1, 0}, row, col, cg.Board[row, col]);
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 0}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, -1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, 1}, row, col, cg.Board[row, col]));
 				break;
 				case QUEEN:
-					moves = generateSlidingMoves(cg, row, col, new int[] {-1, 0}, row, col);
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 0}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, -1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, 1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, -1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, 1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, -1}, row, col));
-					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 1}, row, col));
+					moves = generateSlidingMoves(cg, row, col, new int[] {-1, 0}, row, col, cg.Board[row, col]);
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 0}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, -1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {0, 1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, -1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {-1, 1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, -1}, row, col, cg.Board[row, col]));
+					moves.AddRange(generateSlidingMoves(cg, row, col, new int[] {1, 1}, row, col, cg.Board[row, col]));
 				break;
 			}
 			return moves;
@@ -130,10 +167,13 @@ namespace Chess.Models
 						continue;
 					}
 					moves.AddRange(generateMoveBySquare(cg, i, j));
+					moves.Add(new Move(new int[] {0, 0}, new int[] {0, 0}, 0));
 				}
 			}
 
 			return moves;
 		}
+
+		*/
     }
 }
