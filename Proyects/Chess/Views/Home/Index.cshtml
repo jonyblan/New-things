@@ -11,7 +11,7 @@
     @for (int row = 0; row < 8; row++)
     {
         <div class="row">
-            @for (int col = 0; col < 8; col++)  // Fix this loop to increment correctly
+            @for (int col = 7; col >= 0; col--)  // Fix this loop to increment correctly
             {
                 <div class="cell @( (row + col) % 2 == 0 ? "white" : "black")" data-row="@row" data-col="@col">
                     @if (Model.BoardImages[row, col] != null)
@@ -24,11 +24,12 @@
     }
 </div>
 <h1>@Model.flags</h1>
+<!--
 <div>
-<h1>@Model.moves[0].startSquare[0] @Model.moves[0].startSquare[1]</h1>
-<h1>@Model.moves[0].endSquare[0] @Model.moves[0].endSquare[1]</h1>
+<h1>%Model.moves[0].startSquare[0] %Model.moves[0].startSquare[1]</h1>
+<h1>%Model.moves[0].endSquare[0] %Model.moves[0].endSquare[1]</h1>
 </div>
-
+-->
 
 <!--
 <script>

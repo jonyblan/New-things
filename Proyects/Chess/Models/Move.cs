@@ -12,7 +12,7 @@ namespace Chess.Models
         public int[] endSquare { get; set; }
 
         // Flags to describe the nature of the move (e.g., capture, check, castle)
-        public int flags { get; set; }
+        public long flags { get; set; }
 
 		public const int WHITE = Constants.WHITE;
 		public const int BLACK = Constants.BLACK;
@@ -31,7 +31,7 @@ namespace Chess.Models
 		public const int ROOK_PROMOTION = Constants.ROOK_PROMOTION;
 		public const int QUEEN_PROMOTION = Constants.QUEEN_PROMOTION;
 
-		public Move(int[] startSquare, int[] endSquare, int flags){
+		public Move(int[] startSquare, int[] endSquare, long flags){
 			this.startSquare = startSquare;
 			this.endSquare = endSquare;
 			this.flags = flags;
