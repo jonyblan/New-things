@@ -32,7 +32,6 @@ namespace Chess.Models{
 			IniBoard();
 
 			SetBoardByFen(initialFen);
-			Board[2, 3] = WHITE|KNIGHT;
 
 			moves = GenerateMoves();
 
@@ -74,8 +73,28 @@ namespace Chess.Models{
 			return ret;
 		}
 
+		public List<Move> generateKnightMove(int row, int col, int startingRow, int startingCol){
+			List<Move> ret = new List<Move>();
+			int valid = validSquare(row, col);
+			if((valid == 0) || (valid == 3)){
+				ret.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, this.Board[row, col]));
+			}
+			return ret;
+		}
+
 		public List<Move> generateKnightMoves(int row, int col){
 			List<Move> auxMoves = new List<Move>();
+			
+			// TODO please make this prettier
+			auxMoves.AddRange(generateKnightMove(row - 2, col - 1, row, col));
+			auxMoves.AddRange(generateKnightMove(row - 1, col - 2, row, col));
+			auxMoves.AddRange(generateKnightMove(row - 2, col + 1, row, col));
+			auxMoves.AddRange(generateKnightMove(row - 1, col + 2, row, col));
+			auxMoves.AddRange(generateKnightMove(row + 2, col - 1, row, col));
+			auxMoves.AddRange(generateKnightMove(row + 1, col - 2, row, col));
+			auxMoves.AddRange(generateKnightMove(row + 2, col + 1, row, col));
+			auxMoves.AddRange(generateKnightMove(row + 1, col + 2, row, col));
+
 			return auxMoves;
 		}
 
@@ -138,8 +157,6 @@ namespace Chess.Models{
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 1}, row, col, this.Board[row, col]));
 				break;
 				case ROOK:
-					flags = row*10;
-					flags += col;
 					auxMoves = generateSlidingMoves(row, col, new int[] {-1, 0}, row, col, this.Board[row, col]);
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 0}, row, col, this.Board[row, col]));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {0, -1}, row, col, this.Board[row, col]));
