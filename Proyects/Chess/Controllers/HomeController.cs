@@ -16,19 +16,22 @@ public class HomeController : Controller
 	public IActionResult Index()
 	{
 		var game = new ChessGame(); // Correctly initialized ChessGame object
+		game.makeMove();
+		game.makeMove();
+		game.makeMove();
 		return View(game); // Pass the game model to the view
 	}
 
-	/*
-	@ Maybe implement something to play against the computer
 	[HttpPost]
-	public IActionResult RemovePiece(int row, int col)
+	public IActionResult MakeComputerMove(ChessGame game)
 	{
-		var game = new ChessGame(); // Here, you would ideally retrieve game state from session or database
-		game.ClearPiece(row, col);
-		return Json(new { success = true });  // Return minimal JSON indicating success
+		game.makeMove();  // Assuming this method updates the game state appropriately
+
+		// Save or update the game state as needed
+
+		return Json(new { success = true }); // Respond with success or failure
 	}
-	*/
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

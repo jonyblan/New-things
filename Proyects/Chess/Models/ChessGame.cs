@@ -42,12 +42,39 @@ namespace Chess.Models{
 			Board[row, col] = NOTHING;
 		}
 
+		public void ChangePlayerToMove(){
+			this.whiteToMove = !whiteToMove;
+		}
+
 		public void IniBoard(){
 			for(int i = 0; i < 8; i++){
 				for(int j = 0; j < 8; j++){
 					Board[i, j] = NOTHING;
 				}
 			}
+		}
+
+		public void deleteMoves(){
+			if(moves.Count == 0){
+				return ;
+			}
+			for(int i = moves.Count - 1; i >= 0; i--){
+				moves.RemoveAt(i);
+			}
+		}
+
+		public void makeMove(){
+			if(moves.Count == 0){
+				return ;
+			}
+			Move aux = moves[0];
+			Board[aux.startSquare[0], aux.startSquare[1]] = NOTHING;
+			Board[aux.endSquare[0], aux.endSquare[1]] = aux.flags;
+			deleteMoves();
+			//ChangePlayerToMove();
+			moves = GenerateMoves();
+			BoardToBoardImages();
+			flags = aux.endSquare[0]*10 + aux.endSquare[1] * 1;// + aux.endSquare[0] * 100 + aux.endSquare[1] * 1;
 		}
 
 		public int validSquare(int row, int col){
@@ -104,12 +131,21 @@ namespace Chess.Models{
 			int multiplier = ((this.Board[row, col] & WHITE) != 0) ? 1 : -1;
 
 			if(validSquare(row, col + 1 * multiplier) == 0){
-				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1 * multiplier, col}, this.Board[row, col]));
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 1 * multiplier}, this.Board[row, col]));
 				
 				if(validSquare(row, col + 2 * multiplier) == 0){
-					auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 2 * multiplier, col}, this.Board[row, col]));
+					auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 2 * multiplier}, this.Board[row, col]));
 				}
 			}
+
+			if(validSquare(row - 1, col + 1 * multiplier) == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1 * multiplier, col}, this.Board[row, col]));
+			}
+
+			if(validSquare(row + 1, col + 1 * multiplier) == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1 * multiplier, col}, this.Board[row, col]));
+			}
+			
 
 			return auxMoves;
 		}
@@ -134,6 +170,60 @@ namespace Chess.Models{
 				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, flags));
 				return auxMoves;
 			}
+			return auxMoves;
+		}
+
+		public List<Move> generateKingMoves(int row, int col, long flags){
+			List<Move> auxMoves = new List<Move>();
+
+			int ret = validSquare(row - 1, col - 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row - 1, col - 1}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row - 1, col);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row - 1, col}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row - 1, col + 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row - 1, col + 1}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row, col - 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col - 1}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row, col + 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 1}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row + 1, col - 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1, col - 1}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row + 1, col);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1, col}, this.Board[row, col]));
+			}
+
+			ret = validSquare(row + 1, col + 1);
+
+			if(ret == 0 || ret == 3){
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1, col + 1}, this.Board[row, col]));
+			}
+
 			return auxMoves;
 		}
 
@@ -171,6 +261,9 @@ namespace Chess.Models{
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {-1, 1}, row, col, this.Board[row, col]));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, -1}, row, col, this.Board[row, col]));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 1}, row, col, this.Board[row, col]));
+				break;
+				case KING:
+					auxMoves.AddRange(generateKingMoves(row, col, this.Board[row, col]));
 				break;
 			}
 			return auxMoves;
@@ -256,7 +349,7 @@ namespace Chess.Models{
 		public void BoardToBoardImages(){
 			for(int i = 0; i < 8; i++){
 				for(int j = 0; j < 8; j++){
-					switch(Board[i, j]){
+					switch(Board[i, j] & (Constants.ANDPIECE|Constants.ANDCOLOUR)){
 						case BLACK|PAWN:
 							BoardImages[i, j] = "Black_Pawn.png";
 						break;
@@ -292,6 +385,9 @@ namespace Chess.Models{
 						break;
 						case WHITE|KING:
 							BoardImages[i, j] = "White_King.png";
+						break;
+						case NOTHING:
+							BoardImages[i, j] = null;
 						break;
 					}
 				}
