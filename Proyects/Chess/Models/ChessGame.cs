@@ -22,6 +22,8 @@ namespace Chess.Models{
 		public const long QUEEN = Constants.QUEEN;
 		public const long KING = Constants.KING;
 
+		public List<Move> moveHistory;
+
         public ChessGame(){
             // Initialize the board and set up the game pieces
 			flags = 0;
@@ -30,13 +32,15 @@ namespace Chess.Models{
 			string initialFen = Constants.INITIAL_FEN_POSITION;
 			whiteToMove = true;
 
+			moveHistory = new List<Move>();
+
 			mg = new MoveGeneration();
 
 			IniBoard();
 
 			SetBoardByFen(initialFen);
 
-			moves = mg.GenerateMoves(this.Board, this.whiteToMove);
+			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
 
 			flags = mg.flags;
 
@@ -68,16 +72,40 @@ namespace Chess.Models{
 			}
 		}
 
-		public void makeMove(){
-			if(moves.Count == 0){
+		// TODO make this in just one if
+		public void analizeEnPassant(Move move){
+			if((move.flags & Constants.EN_PASSANT) != 0){
+				if((move.flags & Constants.WHITE) != 0){
+					ClearPiece(move.endSquare[0], move.endSquare[1] - 1);
+				}
+				else{
+					ClearPiece(move.endSquare[0], move.endSquare[1] + 1);
+				}
+			}
+		}
+
+		public void makeMove(int num = 0){
+			if(moves.Count <= num){
 				return ;
 			}
-			Move aux = moves[0];
-			Board[aux.startSquare[0], aux.startSquare[1]] = NOTHING;
+			Move aux = moves[num];
+			moveHistory.Add(aux);
+			ClearPiece(aux.startSquare[0], aux.startSquare[1]);
+
+			analizeEnPassant(aux);
+
+			// TODO
+			analizeCastleKing(aux);
+
+			// TODO
+			analizeCastleQueen(aux);
+
 			Board[aux.endSquare[0], aux.endSquare[1]] = aux.flags;
 			deleteMoves();
 			ChangePlayerToMove();
-			moves = mg.GenerateMoves(this.Board, this.whiteToMove);
+			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
+
+			flags = mg.flags;
 			BoardToBoardImages();
 		}
 
