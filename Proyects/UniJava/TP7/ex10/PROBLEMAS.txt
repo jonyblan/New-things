@@ -1,0 +1,6 @@
+no se como hacer para poner a guess:
+text, boolean e integer necesitan un E guess
+optionQuestion necesita un Object guess
+MultipleAnswerQuestion necesita un Set<Object> guess
+
+al no poder crear un guess, en Game no puedo poner question.guess, y no corre el programa
