@@ -3,6 +3,11 @@
 // this isnt always optimal, as a short term gain can be a long term loss
 // so worthSaving functions are implemented to see when its better to
 // save time, and when not
+// Another important thing about this bot, is that it's not perfect.
+// Sometimes it could do some things faster, but it would
+// defeat the purpose of this bot which is to be the first one optimized.
+// This code is easy to read, easy to understand, etc. Later ones,
+// will have its main focus on being better
 
 function moveUp(){
 	return [0, -1];
