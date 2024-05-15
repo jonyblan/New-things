@@ -1,14 +1,21 @@
 require_relative 'expression'
 
-class BinaryExpression < Expression
+class BinaryExpression
+  include Expression
   attr_accessor :left_exp, :right_exp
-  attr_writer :value
+
   def initialize(left_exp, right_exp)
-    @left_exp = left_exp
-    @right_exp = right_exp
+    raise "Initialized not implemented"
   end
 
   def evaluate
-    @value
+    raise "evaluate not implemented"
+  end
+
+  private
+
+  def init(left_exp, right_exp)
+    @left_exp = left_exp
+    @right_exp = right_exp
   end
 end
