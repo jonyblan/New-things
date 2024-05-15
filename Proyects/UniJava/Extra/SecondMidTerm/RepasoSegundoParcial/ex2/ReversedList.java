@@ -1,0 +1,1 @@
+public interface ReversedList<E> extends List<E>

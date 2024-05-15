@@ -1,0 +1,1 @@
+public class ReversedListImpl<E> implements ReversedList<E>
