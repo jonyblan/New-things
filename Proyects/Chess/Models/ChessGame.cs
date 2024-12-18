@@ -10,8 +10,6 @@ namespace Chess.Models{
 		public bool whiteToMove;
 		public MoveGeneration mg;
 
-		// TODO create a new type called piece
-
 		public const long WHITE = Constants.WHITE;
 		public const long BLACK = Constants.BLACK;
 		public const long NOTHING = Constants.NOTHING;
