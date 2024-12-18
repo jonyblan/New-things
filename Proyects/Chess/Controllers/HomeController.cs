@@ -17,19 +17,20 @@ public class HomeController : Controller
 	{
 		var game = new ChessGame(); // Correctly initialized ChessGame object
 		game.makeMove();
-		game.makeMove();
-		game.makeMove();
 		return View(game); // Pass the game model to the view
 	}
 
 	[HttpPost]
 	public IActionResult MakeComputerMove(ChessGame game)
 	{
-		game.makeMove();  // Assuming this method updates the game state appropriately
-
-		// Save or update the game state as needed
-
-		return Json(new { success = true }); // Respond with success or failure
+		// Assuming game contains updated state, pass it back as JSON
+		return Json(new
+		{
+			success = true,
+			boardImages = game.BoardImages, // Update board images
+			moves = game.moves.Count, // Update moves count
+			flags = game.flags // Update flags
+		});
 	}
 
 

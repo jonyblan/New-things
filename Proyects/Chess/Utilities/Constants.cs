@@ -5,20 +5,20 @@ namespace Chess.Utilities
         public const string ApplicationName = "My Chess App";
         public const int CantPlayers = 2;
         // Chess specific constants
-        public const string INITIAL_FEN_POSITION = "rnbq3r/8/8/8/8/8/8/7R w KQkq - 0 1";
+        public const string INITIAL_FEN_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 		
 		public const int NOTHING = 0;
 		public const int PAWN = 1;
 		public const int KNIGHT = 2;
-		public const int BISHOP = 4;
-		public const int ROOK = 8;
-		public const int QUEEN = 16;
-		public const int KING = 32;
-		public const int BLACK = 64;
-		public const int WHITE = 128;
+		public const int BISHOP = 3;
+		public const int ROOK = 4;
+		public const int QUEEN = 5;
+		public const int KING = 6;
+		public const int BLACK = 8;
+		public const int WHITE = 16;
 
-		public const int ANDPIECE = PAWN + KNIGHT + BISHOP + ROOK + QUEEN + KING;
-		public const int ANDCOLOUR = WHITE + BLACK;
+		public const int ANDPIECE = 7;
+		public const int ANDCOLOUR = 24;
 
 		public const int CASTLE_KING = 512;
 		public const int CASTLE_QUEEN = 1024;

@@ -95,10 +95,10 @@ namespace Chess.Models{
 			analizeEnPassant(aux);
 
 			// TODO
-			analizeCastleKing(aux);
+			//analizeCastleKing(aux);
 
 			// TODO
-			analizeCastleQueen(aux);
+			//analizeCastleQueen(aux);
 
 			Board[aux.endSquare[0], aux.endSquare[1]] = aux.flags;
 			deleteMoves();
@@ -108,8 +108,6 @@ namespace Chess.Models{
 			flags = mg.flags;
 			BoardToBoardImages();
 		}
-
-		
 
 		public void SetBoardByFen(string fen){
 			int i = 0, row = 0, col = 7;

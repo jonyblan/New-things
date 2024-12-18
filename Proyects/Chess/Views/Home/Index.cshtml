@@ -24,6 +24,30 @@
     }
 </div>
 <h1>@Model.flags</h1>
+
+<button id="computerMoveBtn">Computer Move</button>
+
+<script>
+document.getElementById('computerMoveBtn').addEventListener('click', function(@Model) {
+    fetch('/Home/MakeComputerMove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest' // For ASP.NET Core to recognize AJAX
+        }
+    })
+    .then(response => response.json())  // Assuming the server will send back JSON
+    .then(data => {
+        if (data.success) {
+            location.reload();  // Reload the page to update the board
+        } else {
+            alert('Failed to make a move: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error making move:', error));
+});
+</script>
+
 <!--
 <div>
 <h1>%Model.moves[0].startSquare[0] %Model.moves[0].startSquare[1]</h1>
