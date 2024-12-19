@@ -15,7 +15,7 @@ namespace Chess.Models
 
 		public Piece piece {get; set;}
 
-		public Move(int[] startSquare, int[] endSquare, MoveFlags flags, Piece piece){
+		public Move(int[] startSquare, int[] endSquare, Piece piece, MoveFlags flags){
 			this.startSquare = startSquare;
 			this.endSquare = endSquare;
 			this.flags = flags;
@@ -23,31 +23,13 @@ namespace Chess.Models
 		}
 
 		public Move(int[] startSquare, int[] endSquare, Piece piece){
-			this.startSquare = startSquare;
-			this.endSquare = endSquare;
-			this.piece = piece;
+			new Move(startSquare, endSquare, piece, 0);
 		}
 
 		public Move(){
 			this.startSquare = new int[] {0, 0};
 			this.endSquare = new int[] {0, 0};
 			this.flags = 0;
-		}
-
-		public bool IsCheck(){
-			return flags == MoveFlags.Check;
-		}
-
-		public bool IsCheckMate(){
-			return flags == MoveFlags.CheckMate;
-		}
-
-		public bool IsCapture(){
-			return flags == MoveFlags.Capture;
-		}
-
-		public bool IsPromotion(){
-			return (flags & MoveFlags.Promotion) != 0;
 		}
     }
 }

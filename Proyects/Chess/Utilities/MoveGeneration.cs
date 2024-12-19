@@ -11,9 +11,9 @@ namespace Chess.Utilities
 
 		public List<Move> generateKnightMove(int row, int col, int startingRow, int startingCol, Piece[,] Board){
 			List<Move> ret = new List<Move>();
-			int valid = Utils.validSquare(row, col,Board, whiteToMove);
-			if((valid == 0) || (valid == 3)){
-				ret.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol]));
+			MoveFlags valid = Utils.validSquare(row, col,Board, whiteToMove);
+			if(valid.IsValid()){
+				ret.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol], valid));
 			}
 			return ret;
 		}
@@ -38,14 +38,17 @@ namespace Chess.Utilities
 			List<Move> auxMoves = new List<Move>();
 
 			int multiplier = (Board[row, col].PieceColor() == Piece.White) ? 1 : -1;
+			
+			MoveFlags flags = Utils.validSquare(row, col + 1 * multiplier, Board, whiteToMove);
 
-			if(Utils.validSquare(row, col + 1 * multiplier, Board, whiteToMove) == 0){
+			if(flags.IsValid()){
 				// 1 square pawn move
 				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 1 * multiplier}, Board[row, col]));
 				// 2 squares pawn move
 				if(col == 1 || col == 6){
-					if(Utils.validSquare(row, col + 2 * multiplier, Board, whiteToMove) == 0){
-						auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 2 * multiplier}, Board[row, col]));
+					flags = Utils.validSquare(row, col + 2 * multiplier, Board, whiteToMove);
+					if(flags.IsValid()){
+						auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 2 * multiplier}, Board[row, col], flags));
 					}
 				}
 			}
@@ -56,37 +59,29 @@ namespace Chess.Utilities
 			List<Move> auxMoves = new List<Move>();
 			row+=direction[0];
 			col+=direction[1];
-			int ret = Utils.validSquare(row, col, Board, this.whiteToMove);
+			MoveFlags flags = Utils.validSquare(row, col, Board, this.whiteToMove);
 
-			if(ret == 0){ // valid square
-				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol]));
-				auxMoves.AddRange(generateSlidingMoves(row, col, direction, startingRow, startingCol, Board));
+			if(!flags.IsValid()){ // invalid square
 				return auxMoves;
 			}
 
-			if(ret == 1){ // out of bounds square
+			if(flags.IsCapture()){ // square is occupied by a different colour piece
+				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol], flags));
 				return auxMoves;
 			}
 
-			if(ret == 2){ // square is occupied by a same colour piece
-				return auxMoves;
-			}
-
-			if(ret == 3){ // square is occupied by a different colour piece
-				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol]));
-				return auxMoves;
-			}
-
+			// square is empty
+			auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol], flags));
+			auxMoves.AddRange(generateSlidingMoves(row, col, direction, startingRow, startingCol, Board));
 			return auxMoves;
 		}
 
 		public List<Move> generateKingMove(int row, int col, int startingRow, int startingCol, Piece[,] Board){
 			List<Move> auxMoves = new List<Move>();
+			MoveFlags flags = Utils.validSquare(row, col, Board, whiteToMove);
 
-			int ret = Utils.validSquare(row, col, Board, whiteToMove);
-
-			if(ret == 0 || ret == 3){
-				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol]));
+			if(flags.IsValid()){
+				auxMoves.Add(new Move(new int[] {startingRow, startingCol}, new int[] {row, col}, Board[startingRow, startingCol], flags));
 			}
 
 			return auxMoves;

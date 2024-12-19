@@ -24,17 +24,17 @@ namespace Chess.Utilities
 			return	((whiteToMove && Board[row, col].IsBlack()) || !whiteToMove && Board[row, col].IsWhite());
 		}
 
-		public static int validSquare(int row, int col, Piece[,] Board, bool whiteToMove){
+		public static MoveFlags validSquare(int row, int col, Piece[,] Board, bool whiteToMove){
 			if(!inBoundsSquare(row, col)){
-				return 1;
+				return MoveFlags.NoFlag;
 			}
 			if(sameColourSquare(row, col, Board, whiteToMove)){
-				return 2;
+				return MoveFlags.NoFlag;
 			}
 			if(differentColourSquare(row, col, Board, whiteToMove)){
-				return 3;
+				return (MoveFlags.ValidMove | MoveFlags.Capture);
 			}
-			return 0;
+			return MoveFlags.ValidMove;
 		}
 	}
 }
