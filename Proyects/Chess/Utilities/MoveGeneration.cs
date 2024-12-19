@@ -1,10 +1,8 @@
 using Chess.Models;
 using Chess.Utilities;
 
-namespace Chess.Utilities
-{
-    public class MoveGeneration
-    {
+namespace Chess.Utilities{
+    public class MoveGeneration{
 		public bool whiteToMove;
 
 		public long flags = 0;
@@ -37,34 +35,39 @@ namespace Chess.Utilities
 		public List<Move> generatePawnMoves(int row, int col, Piece[,] Board, List<Move> moveHistory){
 			List<Move> auxMoves = new List<Move>();
 
-			int multiplier = (Board[row, col].PieceColor() == Piece.White) ? 1 : -1;
+			int multiplier = (Board[row, col].PieceColor() == Piece.White) ? -1 : 1;
 			
-			MoveFlags flags = Utils.validSquare(row, col + 1 * multiplier, Board, whiteToMove);
+			MoveFlags flags = Utils.validSquare(row + 1 * multiplier, col, Board, whiteToMove);
 
 			// pawns cant capture in front of them
 			if(flags.IsValid() && !flags.IsCapture()){
 				// 1 square pawn move
-				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 1 * multiplier}, Board[row, col]));
+				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1 * multiplier, col}, Board[row, col]));
 				// 2 squares pawn move
-				if(col == 1 || col == 6){
-					flags = Utils.validSquare(row, col + 2 * multiplier, Board, whiteToMove);
+				if((col == 1 && Board[row, col].IsWhite()) || (col == 6 && Board[row, col].IsBlack())){
+					flags = Utils.validSquare(row + 2 * multiplier, col, Board, whiteToMove);
 					if(flags.IsValid() && !flags.IsCapture()){
-						auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, col + 2 * multiplier}, Board[row, col], flags));
+						auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 2 * multiplier, col}, Board[row, col], flags));
 					}
 				}
 			}
 
+			
 			// capture to the left
+			Console.WriteLine("starting pawn captures");
 			flags = Utils.validSquare(row + 1, col + 1 * multiplier, Board, whiteToMove);
 			if(flags.IsCapture()){
+				Console.WriteLine("capture to the right");
 				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row + 1, col + 1 * multiplier}, Board[row, col]));
 			}
 
 			// capture to the right
 			flags = Utils.validSquare(row - 1, col + 1 * multiplier, Board, whiteToMove);
 			if(flags.IsCapture()){
+				Console.WriteLine("capture to the left");
 				auxMoves.Add(new Move(new int[] {row, col}, new int[] {row - 1, col + 1 * multiplier}, Board[row, col]));
 			}
+			Console.WriteLine("finished pawn captures");
 
 			// TODO en-peassant
 
@@ -117,10 +120,12 @@ namespace Chess.Utilities
 
 			// TODO this is just awful
 			// Castling
+			Console.WriteLine("Starting castles");
 			if(Board[row, col].IsWhite()){
 				if((boardFlags & Constants.WhiteCanCastleKing) != 0){
 					if	((Utils.validSquare(row, 5, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 6, Board, true).IsEmpty())){
+							Console.WriteLine("Adding white kingside");
 							auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, 6}, Board[row, col], MoveFlags.KingCastle));
 						}
 				}
@@ -128,6 +133,7 @@ namespace Chess.Utilities
 					if	((Utils.validSquare(row, 1, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 2, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 3, Board, true).IsEmpty())){
+							Console.WriteLine("Adding white queenside");
 							auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, 2}, Board[row, col], MoveFlags.QueenCastle));
 						}
 				}
@@ -136,6 +142,7 @@ namespace Chess.Utilities
 				if((boardFlags & Constants.BlackCanCastleKing) != 0){
 					if	((Utils.validSquare(row, 5, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 6, Board, true).IsEmpty())){
+							Console.WriteLine("Adding black kingside");
 							auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, 6}, Board[row, col], MoveFlags.KingCastle));
 						}
 				}
@@ -143,6 +150,7 @@ namespace Chess.Utilities
 					if	((Utils.validSquare(row, 1, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 2, Board, true).IsEmpty()) &&
 						(Utils.validSquare(row, 3, Board, true).IsEmpty())){
+							Console.WriteLine("Adding black queenside");
 							auxMoves.Add(new Move(new int[] {row, col}, new int[] {row, 2}, Board[row, col], MoveFlags.QueenCastle));
 						}
 				}
@@ -150,6 +158,8 @@ namespace Chess.Utilities
 			else{
 				throw new PieceException("Invalid piece");
 			}
+			
+			Console.WriteLine("finished castles");
 			return auxMoves;
 		}
 
@@ -158,24 +168,37 @@ namespace Chess.Utilities
 
 			switch(Board[row, col].PieceType()){
 				case Piece.Pawn:
+					Console.WriteLine("starting pawn at " + row + " " + col);
 					auxMoves = generatePawnMoves(row, col, Board, moveHistory);
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished pawn at " + row + " " + col);
 				break;
 				case Piece.Knight:
+					Console.WriteLine("starting knight at " + row + " " + col);
 					auxMoves = generateKnightMoves(row, col, Board);
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished knight at " + row + " " + col);
 				break;
 				case Piece.Bishop:
+					Console.WriteLine("starting bishop at " + row + " " + col);
 					auxMoves = generateSlidingMoves(row, col, new int[] {-1, -1}, row, col, Board);
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {-1, 1}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, -1}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 1}, row, col, Board));
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished bishop at " + row + " " + col);
 				break;
 				case Piece.Rook:
+					Console.WriteLine("starting rook at " + row + " " + col);
 					auxMoves = generateSlidingMoves(row, col, new int[] {-1, 0}, row, col, Board);
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 0}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {0, -1}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {0, 1}, row, col, Board));
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished rook at " + row + " " + col);
 				break;
 				case Piece.Queen:
+					Console.WriteLine("starting queen at " + row + " " + col);
 					auxMoves = generateSlidingMoves(row, col, new int[] {-1, 0}, row, col, Board);
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 0}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {0, -1}, row, col, Board));
@@ -184,9 +207,14 @@ namespace Chess.Utilities
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {-1, 1}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, -1}, row, col, Board));
 					auxMoves.AddRange(generateSlidingMoves(row, col, new int[] {1, 1}, row, col, Board));
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished queen at " + row + " " + col);
 				break;
 				case Piece.King:
+					Console.WriteLine("starting king at " + row, " " + col);
 					auxMoves.AddRange(generateKingMoves(row, col, Board, moveHistory, boardFlags));
+					Console.WriteLine(auxMoves.Count + " possible moves");
+					Console.WriteLine("finished king at " + row + " " + col);
 				break;
 
 			}
@@ -218,6 +246,10 @@ namespace Chess.Utilities
 
 					auxMoves.AddRange(this.generateMoveBySquare(i, j, Board, moveHistory, boardFlags));
 				}
+			}
+			Console.WriteLine(auxMoves.Count + " posible moves:");
+			foreach(Move move in auxMoves){
+				Console.WriteLine(move.pieceName() + " in " + move.startRow() + " " + move.startCol() + " to " + move.endRow() + " " + move.endCol());
 			}
 			return auxMoves;
 		}

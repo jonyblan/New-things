@@ -9,10 +9,10 @@
 <h1>Legal moves: @Model.moves.Count</h1>
 <h1>Flags: @Model.boardFlags</h1>
 <div class="chessboard">
-    @for (int row = 0; row < 8; row++)
+    @for (int col = 0; col < 8; col++)
     {
         <div class="row">
-            @for (int col = 7; col >= 0; col--)  // Fix this loop to increment correctly
+            @for (int row = 0; row < 8; row++)  // Fix this loop to increment correctly
             {
                 <div class="cell @( (row + col) % 2 == 0 ? "white" : "black")" data-row="@row" data-col="@col">
                     @if (Model.BoardImages[row, col] != null)

@@ -25,5 +25,17 @@ namespace Chess.Utilities{
 		public static bool IsEmpty(this MoveFlags flags){
 			return (flags & MoveFlags.EmptySquare) != 0;
 		}
+
+		public static bool IsCastle(this MoveFlags flags){
+			return (IsKingCastle(flags) || IsQueenCastle(flags));
+		}
+
+		public static bool IsKingCastle(this MoveFlags flags){
+			return (flags & MoveFlags.KingCastle) != 0;
+		}
+
+		public static bool IsQueenCastle(this MoveFlags flags){
+			return (flags & MoveFlags.QueenCastle) != 0;
+		}
 	}
 }

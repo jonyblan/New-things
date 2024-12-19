@@ -64,6 +64,34 @@ namespace Chess.Models{
 			}
 		}
 
+		public void makeThisMove(Move move){
+			if(move.flags.IsCastle()){
+				if(move.flags.IsKingCastle()){
+					if(whiteToMove){
+						ClearPiece(7, 7);
+						PutPiece(5, 7, Piece.White | Piece.Rook);
+					}
+					else{
+						ClearPiece(7, 0);
+						PutPiece(5, 0, Piece.Black | Piece.Rook);
+					}
+				}
+				else{
+					if(whiteToMove){
+						ClearPiece(0, 7);
+						PutPiece(2, 7, Piece.White | Piece.Rook);
+					}
+					else{
+						ClearPiece(0, 0);
+						PutPiece(2, 0, Piece.Black | Piece.Rook);
+					}
+				}
+			}
+			ClearPiece(move.startRow(), move.startCol());
+
+			PutPiece(move.endRow(), move.endCol(), move.piece);
+		}
+
 		public void makeMove(int num = 0){
 			if(moves.Count <= num){
 				return ;
@@ -75,17 +103,7 @@ namespace Chess.Models{
 			Move aux = moves[num];
 			moveHistory.Add(aux);
 
-			ClearPiece(aux.startRow(), aux.startCol());
-			PutPiece(aux.endRow(), aux.endCol(), aux.piece);
-			
-			// TODO
-			//analizeEnPassant(aux);
-
-			// TODO
-			//analizeCastleKing(aux);
-
-			// TODO
-			//analizeCastleQueen(aux);
+			makeThisMove(aux);
 
 			deleteMoves();
 			//ChangePlayerToMove();
@@ -95,7 +113,7 @@ namespace Chess.Models{
 		}
 
 		public void SetBoardByFen(string fen){
-			int i = 0, row = 0, col = 7;
+			int i = 0, row = 0, col = 0;
 			
 			Console.WriteLine("Analizing fen");
 			Console.WriteLine("Current letter: ");
@@ -140,14 +158,14 @@ namespace Chess.Models{
 						Board[row, col] = Piece.Black|Piece.King;
 					break;
 					case '/':
-						col--;
-						row = -1;
+						row++;
+						col = -1;
 					break;
 					default:
-						row += (int)fen[i] - '0' - 1;
+						col += (int)fen[i] - '0' - 1;
 					break;
 				}
-				row++;
+				col++;
 				i++;
 			}
 			Console.WriteLine("End pieces");

@@ -52,5 +52,9 @@ namespace Chess.Models
 		public int endCol(){
 			return endSquare[1];
 		}
+
+		public string pieceName(){
+			return piece.PieceType().Name();
+		}
     }
 }

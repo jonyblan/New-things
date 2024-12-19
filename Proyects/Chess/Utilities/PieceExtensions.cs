@@ -21,5 +21,17 @@ namespace Chess.Utilities{
 		public static bool IsEmpty(this Piece piece){
             return piece == Piece.None;
         }
+
+		public static string Name(this Piece piece){
+			switch(piece){
+				case Piece.Pawn: return "pawn";
+				case Piece.Knight: return "knight";
+				case Piece.Rook: return "rook";
+				case Piece.Bishop: return "bishop";
+				case Piece.Queen: return "queen";
+				case Piece.King: return "king";
+				default: return "N/A";
+			}
+		}
     }
 }
