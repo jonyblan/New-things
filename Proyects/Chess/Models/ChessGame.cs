@@ -66,24 +66,24 @@ namespace Chess.Models{
 
 		public void makeThisMove(Move move){
 			if(move.flags.IsCastle()){
-				if(move.flags.IsKingCastle()){
-					if(whiteToMove){
+				if(whiteToMove){
+					if(move.flags.IsKingCastle()){
 						ClearPiece(7, 7);
-						PutPiece(5, 7, Piece.White | Piece.Rook);
+						PutPiece(7, 5, Piece.White | Piece.Rook);
 					}
 					else{
 						ClearPiece(7, 0);
-						PutPiece(5, 0, Piece.Black | Piece.Rook);
+						PutPiece(7, 2, Piece.White | Piece.Rook);
 					}
 				}
 				else{
-					if(whiteToMove){
+					if(move.flags.IsKingCastle()){
 						ClearPiece(0, 7);
-						PutPiece(2, 7, Piece.White | Piece.Rook);
+						PutPiece(0, 5, Piece.Black | Piece.Rook);
 					}
 					else{
 						ClearPiece(0, 0);
-						PutPiece(2, 0, Piece.Black | Piece.Rook);
+						PutPiece(0, 2, Piece.Black | Piece.Rook);
 					}
 				}
 			}
@@ -92,23 +92,66 @@ namespace Chess.Models{
 			PutPiece(move.endRow(), move.endCol(), move.piece);
 		}
 
+		public Move chooseMove(){
+			Random rnd = new Random();
+			num  = rnd.Next(0, moves.Count);
+			return moves[num];
+		}
+
+		public void changeCastlingFlags(Move chosenMove){
+			Piece piece = chosenMove.piece;
+			if(piece.PieceType() == Piece.King){
+				if(whiteToMove){
+					flags &= (!WhiteCanCastleKing);
+					flags &= (!WhiteCanCastleQueen);
+				}
+				else{
+					flags &= (!BlackCanCastleKing);
+					flags &= (!BlackCanCastleQueen);
+				}
+			}
+			else if(piece.PieceType() == Piece.Rook){
+				if(whiteToMove){
+					if(chosenMove.startingCol == 0){
+						flags &= (!WhiteCanCastleQueen);
+					}
+					else if(chosenMove.startingCol == 7){
+						flags &= (!WhiteCanCastleKing);
+					}
+				}
+				else{
+					if(chosenMove.startingCol == 0){
+						flags &= (!BlackCanCastleQueen);
+					}
+					else if(chosenMove.startingCol == 7){
+						flags &= (!BlackCanCastleKing);
+					}
+				}
+			}
+		}
+
+		public void changeFlags(Move chosenMove){
+			Piece piece = chosenMove.piece;
+			changeCastlingFlags(chosenMove);
+		}
+
 		public void makeMove(int num = 0){
+			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory, boardFlags);
+
 			if(moves.Count <= num){
 				return ;
 			}
 
-			Random rnd = new Random();
-			num  = rnd.Next(0, moves.Count);
+			Move chosenMove = chooseMove();
 			
-			Move aux = moves[num];
 			moveHistory.Add(aux);
+
+			changeFlags(chosenMove);
 
 			makeThisMove(aux);
 
 			deleteMoves();
 			//ChangePlayerToMove();
-			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory, boardFlags);
-			
 			BoardToBoardImages();
 		}
 
