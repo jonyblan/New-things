@@ -22,6 +22,8 @@ namespace Chess.Models{
 
 		Capture = 			CheckMate << 1,
 
-		ValidMove =			Capture << 1
+		ValidMove =			Capture << 1,
+
+		EmptySquare = 		ValidMove << 1
 	}
 }

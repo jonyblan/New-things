@@ -3,6 +3,7 @@ using Chess.Utilities;
 namespace Chess.Models
 {
 	// TODO organize better all this code
+	// TODO use startSquare and endSquare better so that all the code isnt just a "new int[,] = {row, col}"
     public class Move{
         // Represents the start square of the move (e.g., "e2")
         public int[] startSquare { get; set; } = new int[2];

@@ -34,7 +34,7 @@ namespace Chess.Utilities
 			if(differentColourSquare(row, col, Board, whiteToMove)){
 				return (MoveFlags.ValidMove | MoveFlags.Capture);
 			}
-			return MoveFlags.ValidMove;
+			return MoveFlags.ValidMove | MoveFlags.EmptySquare;
 		}
 	}
 }

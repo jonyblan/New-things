@@ -21,5 +21,9 @@ namespace Chess.Utilities{
 		public static bool IsValid(this MoveFlags flags){
 			return (flags & MoveFlags.ValidMove) != 0;
 		}
+
+		public static bool IsEmpty(this MoveFlags flags){
+			return (flags & MoveFlags.EmptySquare) != 0;
+		}
 	}
 }

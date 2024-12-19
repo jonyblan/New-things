@@ -29,7 +29,7 @@ public class HomeController : Controller
 			success = true,
 			boardImages = game.BoardImages, // Update board images
 			moves = game.moves.Count, // Update moves count
-			flags = game.flags // Update flags
+			flags = game.boardFlags // Update flags
 		});
 	}
 

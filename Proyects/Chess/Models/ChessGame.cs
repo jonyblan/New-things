@@ -6,7 +6,7 @@ namespace Chess.Models{
         public string[,] BoardImages { get; set; }
 		public Piece [,] Board;
 		public List<Move> moves {get; set;}
-		public ulong flags;
+		public ulong boardFlags;
 		public int fullMoves;
 		public bool whiteToMove;
 		public MoveGeneration mg;
@@ -16,7 +16,7 @@ namespace Chess.Models{
         public ChessGame(){
 			Console.WriteLine("Hello, World!");
             // Initialize the board and set up the game pieces
-			flags = 0;
+			boardFlags = 0;
             BoardImages = new string[8, 8];
 			Board = new Piece[8,8];
 			string initialFen = Constants.INITIAL_FEN_POSITION;
@@ -30,7 +30,7 @@ namespace Chess.Models{
 
 			SetBoardByFen(initialFen);
 
-			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
+			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory, boardFlags);
 
 			BoardToBoardImages();
         }
@@ -89,14 +89,18 @@ namespace Chess.Models{
 
 			deleteMoves();
 			//ChangePlayerToMove();
-			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
+			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory, boardFlags);
 			
 			BoardToBoardImages();
 		}
 
 		public void SetBoardByFen(string fen){
 			int i = 0, row = 0, col = 7;
-
+			
+			Console.WriteLine("Analizing fen");
+			Console.WriteLine("Current letter: ");
+			Console.WriteLine(fen[i]);
+			Console.WriteLine("Pieces");
 			while(fen[i] != ' '){
 				switch(fen[i]){
 					case 'P':
@@ -146,31 +150,55 @@ namespace Chess.Models{
 				row++;
 				i++;
 			}
+			Console.WriteLine("End pieces");
+			Console.WriteLine("Starting who to move");
 			i++;
+			
+			Console.WriteLine("Current letter: ");
+			Console.WriteLine(fen[i]);
 			if(fen[i] == 'w'){
+			Console.WriteLine("white to move");
 				whiteToMove = true;
 			}
 			else{
+			Console.WriteLine("black to move");
 				whiteToMove = false;
 			}
+			
+			Console.WriteLine("finished who to move");
 			i++;
+			i++;
+			Console.WriteLine("Current letter: ");
+			Console.WriteLine(fen[i]);
+			Console.WriteLine("Starting castle");
 			while((fen[i] != '-') && (fen[i] != ' ')){
+				Console.WriteLine("Letter inside");
 				switch(fen[i]){
 					case 'K':
-						flags |= Constants.WhiteCanCastleKing;
+					Console.WriteLine("fen can WKing");
+						boardFlags |= Constants.WhiteCanCastleKing;
 					break;
 					case 'Q':
-						flags |= Constants.WhiteCanCastleQueen;
+					Console.WriteLine("fen can WQueen");
+						boardFlags |= Constants.WhiteCanCastleQueen;
 					break;
 					case 'k':
-						flags |= Constants.BlackCanCastleKing;
+					Console.WriteLine("fen can BKing");
+						boardFlags |= Constants.BlackCanCastleKing;
 					break;
 					case 'q':
-						flags |= Constants.BlackCanCastleQueen;
+					Console.WriteLine("fen can BQueen");
+						boardFlags |= Constants.BlackCanCastleQueen;
 					break;
+					default:
+						throw new ArgumentException("FEN is invalid");
 				}
 				i++;
 			}
+			Console.WriteLine("Finished castles");
+			Console.WriteLine("Current letter: ");
+			Console.WriteLine(fen[i]);
+			Console.WriteLine("Finished fen");
 		}
 
 		public void BoardToBoardImages(){
