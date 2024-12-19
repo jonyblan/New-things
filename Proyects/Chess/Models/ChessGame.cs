@@ -6,7 +6,8 @@ namespace Chess.Models{
         public string[,] BoardImages { get; set; }
 		public Piece [,] Board;
 		public List<Move> moves {get; set;}
-		public long flags;
+		public ulong flags;
+		public int fullMoves;
 		public bool whiteToMove;
 		public MoveGeneration mg;
 
@@ -31,13 +32,15 @@ namespace Chess.Models{
 
 			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
 
-			flags = mg.flags;
-
 			BoardToBoardImages();
         }
 
 		public void ClearPiece(int row, int col) {
 			Board[row, col] = Piece.None;
+		}
+
+		public void PutPiece(int row, int col, Piece piece){
+			Board[row, col] = piece;
 		}
 
 		public void ChangePlayerToMove(){
@@ -65,9 +68,15 @@ namespace Chess.Models{
 			if(moves.Count <= num){
 				return ;
 			}
+
+			Random rnd = new Random();
+			num  = rnd.Next(0, moves.Count);
+			
 			Move aux = moves[num];
 			moveHistory.Add(aux);
-			ClearPiece(aux.startSquare[0], aux.startSquare[1]);
+
+			ClearPiece(aux.startRow(), aux.startCol());
+			PutPiece(aux.endRow(), aux.endCol(), aux.piece);
 			
 			// TODO
 			//analizeEnPassant(aux);
@@ -79,10 +88,9 @@ namespace Chess.Models{
 			//analizeCastleQueen(aux);
 
 			deleteMoves();
-			ChangePlayerToMove();
+			//ChangePlayerToMove();
 			moves = mg.GenerateMoves(this.Board, this.whiteToMove, this.moveHistory);
-
-			flags = mg.flags;
+			
 			BoardToBoardImages();
 		}
 
@@ -136,6 +144,31 @@ namespace Chess.Models{
 					break;
 				}
 				row++;
+				i++;
+			}
+			i++;
+			if(fen[i] == 'w'){
+				whiteToMove = true;
+			}
+			else{
+				whiteToMove = false;
+			}
+			i++;
+			while((fen[i] != '-') && (fen[i] != ' ')){
+				switch(fen[i]){
+					case 'K':
+						flags |= Constants.WhiteCanCastleKing;
+					break;
+					case 'Q':
+						flags |= Constants.WhiteCanCastleQueen;
+					break;
+					case 'k':
+						flags |= Constants.BlackCanCastleKing;
+					break;
+					case 'q':
+						flags |= Constants.BlackCanCastleQueen;
+					break;
+				}
 				i++;
 			}
 		}
