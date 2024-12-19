@@ -3,8 +3,7 @@ using Chess.Models;
 
 namespace Chess.Models{
 	[Flags]
-	public enum Piece
-	{
+	public enum Piece {
 		None		= 0b00000,  // No piece
 
 		// Piece types (first 3 bits)
@@ -22,5 +21,4 @@ namespace Chess.Models{
 		PieceMask	= 0b00111,
 		ColorMask	= 0b11000
 	}
-	
 }

@@ -6,7 +6,8 @@
 	<link rel="stylesheet" href="~/css/chessboard.css" />
 </head>
 
-<h1>@Model.moves.Count</h1>
+<h1>Legal moves: @Model.moves.Count</h1>
+<h1>Flags: @Model.flags</h1>
 <div class="chessboard">
     @for (int row = 0; row < 8; row++)
     {
@@ -23,7 +24,6 @@
         </div>
     }
 </div>
-<h1>@Model.flags</h1>
 
 <button id="computerMoveBtn">Computer Move</button>
 

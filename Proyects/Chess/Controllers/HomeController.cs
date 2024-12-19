@@ -16,7 +16,7 @@ public class HomeController : Controller
 	public IActionResult Index()
 	{
 		var game = new ChessGame(); // Correctly initialized ChessGame object
-		game.makeMove();
+		//game.makeMove();
 		return View(game); // Pass the game model to the view
 	}
 

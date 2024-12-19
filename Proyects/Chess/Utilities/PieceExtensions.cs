@@ -10,11 +10,11 @@ namespace Chess.Utilities{
             return (piece & Piece.Black) == Piece.Black;
         }
         
-		public static Piece GetPieceType(this Piece piece) {
+		public static Piece PieceType(this Piece piece) {
             return piece & Piece.PieceMask; // Filters out color bits
         }
 
-		public static Piece GetPieceColor(this Piece piece){
+		public static Piece PieceColor(this Piece piece){
 			return piece & Piece.ColorMask;
 		}
         

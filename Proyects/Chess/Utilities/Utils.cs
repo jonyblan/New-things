@@ -1,4 +1,5 @@
 using Chess.Utilities;
+using Chess.Models;
 
 namespace Chess.Utilities
 {
@@ -11,21 +12,19 @@ namespace Chess.Utilities
 					col <= 7);
 		}
 
-		public static bool emptySquare(int row, int col, long[,] Board){
-			return (Board[row, col] == Constants.NOTHING);
+		public static bool emptySquare(int row, int col,Piece[,] Board){
+			return (Board[row, col] == Piece.None);
 		}
 
-		public static bool sameColourSquare(int row, int col, long[,] Board, bool whiteToMove){
-			return	((whiteToMove && ((Board[row, col] & Constants.ANDCOLOUR) == Constants.WHITE)) || 
-					(!whiteToMove && ((Board[row, col] & Constants.ANDCOLOUR) == Constants.BLACK)));
+		public static bool sameColourSquare(int row, int col, Piece[,] Board, bool whiteToMove){
+			return ((whiteToMove && Board[row, col].IsWhite()) || !whiteToMove && Board[row, col].IsBlack());
 		}
 
-		public static bool differentColourSquare(int row, int col, long[,] Board, bool whiteToMove){
-			return	((whiteToMove && ((Board[row, col] & Constants.ANDCOLOUR) == Constants.BLACK)) || 
-					(!whiteToMove && ((Board[row, col] & Constants.ANDCOLOUR) == Constants.WHITE)));
+		public static bool differentColourSquare(int row, int col, Piece[,] Board, bool whiteToMove){
+			return	((whiteToMove && Board[row, col].IsBlack()) || !whiteToMove && Board[row, col].IsWhite());
 		}
 
-		public static int validSquare(int row, int col, long[,] Board, bool whiteToMove){
+		public static int validSquare(int row, int col, Piece[,] Board, bool whiteToMove){
 			if(!inBoundsSquare(row, col)){
 				return 1;
 			}
