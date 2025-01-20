@@ -1,11 +1,11 @@
 class Button {
     constructor(x, y, width, height, label, onClick) {
-        this.x = x; // Position on the canvas
+        this.x = x;
         this.y = y;
-        this.width = width; // Dimensions
+        this.width = width;
         this.height = height;
-        this.label = label; // Text displayed on the button
-        this.onClick = onClick; // Function to call when clicked
+        this.label = label;
+        this.onClick = onClick;
     }
 
     draw() {

@@ -14,7 +14,7 @@ class Node {
     // Method to draw the node
     draw() {
         fill(100, 150, 255); // Color of the node
-        stroke(0); // Node outline color
+        stroke(88, 57, 39); // Node outline color
         ellipse(this.x, this.y, this.radius * 2); // Draw the node as a circle
 
         // Optional: draw the label in the center of the node
