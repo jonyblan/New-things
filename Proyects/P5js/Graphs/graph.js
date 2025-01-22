@@ -12,24 +12,45 @@ class Graph {
         this.weight = params.weighted;
     }
 
+    /**
+     * Adds a new node to the graph.
+     * @param {number} x - The x-coordinate of the node.
+     * @param {number} y - The y-coordinate of the node.
+     * @param {number} radius - The radius of the node.
+     */
     addNode(x, y, radius) {
-        const node = new Node(x, y, radius, this.index++);
-        this.nodes.push(node);
+        const newNode = new Node(x, y, radius, this.index++);
+        this.nodes.push(newNode);
+        console.log(`Node added: ${newNode.label}`);
     }
 
+    /**
+     * Draws the graph, including all edges, nodes, and highlights for selected nodes.
+     */
     draw() {
-        // Draw all edges first
+        // Draw all edges first, so nodes appear on top
         this.edges.forEach(edge => edge.draw(this.directed));
 
         // Draw all nodes
         this.nodes.forEach(node => node.draw());
 
-        // Highlight the selected node
+        // Highlight the selected node, if any
+        this.highlightSelectedNode();
+    }
+
+	/**
+     * Highlights the currently selected node with a green outline.
+     */
+    highlightSelectedNode() {
         if (this.selectedNode) {
             noFill();
-            stroke(0, 255, 0); // Green outline for selected nodes
+            stroke(0, 255, 0); // Green outline
             strokeWeight(3);
-            ellipse(this.selectedNode.x, this.selectedNode.y, this.selectedNode.radius * 2 + 6);
+            ellipse(
+                this.selectedNode.x,
+                this.selectedNode.y,
+                this.selectedNode.radius * 2 + 6 // Slightly larger than the node's radius
+            );
         }
     }
 	
@@ -94,213 +115,267 @@ class Graph {
 		this.selectedNode = null; // Deselect
 	}
 
-	addEdge(clickedNode) {
-		// Count existing edges between the two nodes
-		const existingEdges = this.edges.filter(edge =>
-			(edge.node1 === this.selectedNode && edge.node2 === clickedNode) ||
-			(edge.node1 === clickedNode && edge.node2 === this.selectedNode)
-		);
+	/**
+     * Adds an edge between the selected node and a clicked node.
+     * Handles both self-loops and regular edges, ensuring the graph's constraints are respected.
+     * @param {Node} clickedNode - The node to connect with the selected node.
+     */
+    addEdge(clickedNode) {
+        if (!this.selectedNode) return;
 
-		if(existingEdges != 0 && !this.multiEdge){
-			this.selectedNode = null;
-			this.edgeMode = null;
-			return ;
-		}
+        // Check for existing edges between the two nodes
+        const existingEdges = this.getEdgesBetweenNodes(this.selectedNode, clickedNode);
 
-		const totalEdges = existingEdges.length + 1;
-
-		// Assign indices to all edges between these nodes
-		existingEdges.forEach((edge, index) => {
-			edge.index = index + 1;
-			edge.totalEdges = totalEdges;
-		});
-
-		// Add the new edge
-		var newEdge;
-		if((this.selectedNode === clickedNode) || (this.directed)){
-			newEdge = new Edge(this.selectedNode, clickedNode) // Self-loop or directed edge: no sorting needed
-		}
-		else{
-			newEdge = new Edge(...[this.selectedNode, clickedNode].sort((a, b) => a.label - b.label));
-		}
-
-		this.edges.push(newEdge);
-
-		console.log(`Edge created between node ${this.selectedNode.label} and node ${clickedNode.label}`);
-
-		this.selectedNode = null;
-		this.edgeMode = null;
-		
-	}
-	
-	deleteEdge(clickedNode) {
-		if (!this.selectedNode || !clickedNode) return;
-	
-		let nodePair;
-		
-		if (this.directed) {
-			// For directed graphs, don't sort nodes, preserve direction
-			nodePair = [this.selectedNode, clickedNode];
-		} else {
-			// For undirected graphs, sort the nodes to make A->B and B->A the same
-			nodePair = [this.selectedNode, clickedNode].sort((a, b) => a.label - b.label);
-		}
-	
-		// Find all edges between the two nodes (order matters for directed, doesn't for undirected)
-		const edgesBetweenNodes = this.edges.filter(edge =>
-			(this.directed ? 
-				(edge.node1 === nodePair[0] && edge.node2 === nodePair[1]) :
-				[edge.node1, edge.node2].sort((a, b) => a.label - b.label).every((node, index) => node === nodePair[index])
-			)
-		);
-	
-		if (edgesBetweenNodes.length > 0) {
-			// Delete the last edge in the list (most recently created)
-			const edgeToDelete = edgesBetweenNodes[edgesBetweenNodes.length - 1];
-			this.edges = this.edges.filter(edge => edge !== edgeToDelete);
-			console.log(`Last edge deleted between node ${nodePair[0].label} and node ${nodePair[1].label}`);
-	
-			// Update indices for remaining edges between these nodes
-			const remainingEdges = this.edges.filter(edge =>
-				(this.directed ?
-					(edge.node1 === nodePair[0] && edge.node2 === nodePair[1]) :
-					[edge.node1, edge.node2].sort((a, b) => a.label - b.label).every((node, index) => node === nodePair[index])
-				)
-			);
-	
-			remainingEdges.forEach((edge, index) => {
-				edge.index = index + 1;
-				edge.totalEdges = remainingEdges.length;
-			});
-		}
-	
-		this.selectedNode = null; // Clear selection after deleting the edge
-		this.edgeMode = null; // Exit delete mode
-	}
-	
-    activateEdgeMode(action) {
-		if (action === "add") {
-			console.log("Edge mode activated: add");
-			this.edgeMode = "add";
-		} else if (action === "delete") {
-			console.log("Edge mode activated: delete");
-			this.edgeMode = "delete";
-		}
-	}
-
-    deleteNode(nodeToDelete) {
-		// Remove the node from the list of nodes
-		this.nodes = this.nodes.filter(node => node !== nodeToDelete);
-	
-		// Remove all edges associated with this node
-		this.edges = this.edges.filter(edge => edge.node1 !== nodeToDelete && edge.node2 !== nodeToDelete);
-	
-		// If the selected node is the one being deleted, reset the selection
-		if (this.selectedNode === nodeToDelete) {
-			console.log("Selected node deleted, resetting selection.");
-			this.selectedNode = null;
-		}
-	
-		// You might want to reset the edge mode in case delete was triggered from it
-		this.edgeMode = null;
-	}
-
-	showContextMenu(clickedNode) {
-		// Create a container for the context menu
-		const menuContainer = createDiv()
-			.style('position', 'absolute')
-			.style('top', `${clickedNode.y + 20}px`)  // Position slightly below the node
-			.style('left', `${clickedNode.x + 20}px`) // Position slightly to the right of the node
-			.style('background-color', '#FFF')
-			.style('border', '1px solid #000')
-			.style('padding', '10px')
-			.style('border-radius', '8px')
-			.style('box-shadow', '0 8px 16px rgba(0, 0, 0, 0.3)')
-			.style('z-index', '10');
-	
-		// Create a button inside the context menu
-		const button1 = createButton('Hello')
-			.mousePressed(() => this.doSomething())
-			.style('padding', '5px 10px')
-			.style('margin', '5px 0')
-			.style('background-color', '#32CD32') // Light green color
-			.style('color', '#fff')
-			.style('border', 'none')
-			.style('border-radius', '5px')
-			.parent(menuContainer);
-	
-		// You can add more buttons here, for now, we add one "Hello" button
-		// Add as many buttons as needed here
-	
-		// Close the menu when clicking anywhere outside
-		this.addCloseListener(menuContainer);
-	}
-	
-	// Function to close the context menu when clicking outside
-	addCloseListener(menuContainer) {
-		// Close the context menu if the user clicks outside
-		const closeMenu = () => {
-			menuContainer.remove();
-			// Remove the event listener to avoid memory leaks
-			document.removeEventListener('click', closeMenu);
-		};
-	
-		// Event listener for click outside
-		document.addEventListener('click', closeMenu);
-	}
-	
-	doSomething() {
-		// Process logic inside the Graph class
-		const result = "Hello, World!"; // Replace this with your actual logic
-	
-		// Display the result in a modal
-		this.showModal(result);
-	}
-
-	showModal(message) {
-		// Create the modal container
-		const modalContainer = createDiv()
-			.style('position', 'fixed')
-			.style('top', '50%')
-			.style('left', '50%')
-			.style('transform', 'translate(-50%, -50%)')
-			.style('background-color', '#FFF')
-			.style('border', '1px solid #000')
-			.style('padding', '20px')
-			.style('border-radius', '10px')
-			.style('box-shadow', '0 8px 16px rgba(0, 0, 0, 0.3)')
-			.style('z-index', '1000')
-			.style('opacity', '0') // Start fully transparent
-			.style('transition', 'opacity 0.3s ease-out'); // Add transition for smooth animation
-	
-		// Add the message
-		createDiv(message)
-			.style('margin-bottom', '15px')
-			.style('font-size', '16px')
-			.parent(modalContainer);
-	
-		// Add a "Close" button
-		const closeButton = createButton('Close')
-			.style('padding', '5px 10px')
-			.style('background-color', '#FF6347') // Tomato color for the button
-			.style('color', '#FFF')
-			.style('border', 'none')
-			.style('border-radius', '5px')
-			.parent(modalContainer)
-			.mousePressed(() => modalContainer.remove());
-	
-		// Append modal to the body and trigger the animation
-		setTimeout(() => modalContainer.style('opacity', '1'), 10); // Delay slightly to ensure smooth transition
-	}
-	
-	
-	
-	
-
-    handleMouseDragged(node) {
-        if (node) {
-            node.x = mouseX;
-            node.y = mouseY;
+        // Prevent adding edges if multi-edges are disabled and an edge already exists
+        if (existingEdges.length > 0 && !this.multiEdge) {
+            console.log("Edge creation aborted: Multi-edges not allowed.");
+            this.clearEdgeMode();
+            return;
         }
+
+        const totalEdges = existingEdges.length + 1;
+
+        // Update indices for existing edges to reflect the new total
+        existingEdges.forEach((edge, index) => {
+            edge.index = index + 1;
+            edge.totalEdges = totalEdges;
+        });
+
+        // Create a new edge, respecting self-loops and directed graph rules
+        const newEdge = (this.selectedNode === clickedNode || this.directed)
+            ? new Edge(this.selectedNode, clickedNode)
+            : new Edge(...[this.selectedNode, clickedNode].sort((a, b) => a.label - b.label));
+
+        this.edges.push(newEdge);
+
+        console.log(`Edge created: ${this.selectedNode.label} -> ${clickedNode.label}`);
+        this.clearEdgeMode();
+    }
+	
+	/**
+     * Deletes the most recently added edge between the selected node and a clicked node.
+     * Handles both directed and undirected graphs, ensuring indices are updated.
+     * @param {Node} clickedNode - The node to disconnect from the selected node.
+     */
+    deleteEdge(clickedNode) {
+        if (!this.selectedNode || !clickedNode) return;
+
+        // Determine the pair of nodes based on graph type
+        const nodePair = this.directed
+            ? [this.selectedNode, clickedNode]
+            : [this.selectedNode, clickedNode].sort((a, b) => a.label - b.label);
+
+        // Get all edges between the selected nodes
+        const edgesBetweenNodes = this.getEdgesBetweenNodes(...nodePair);
+
+        if (edgesBetweenNodes.length > 0) {
+            // Remove the last edge (most recently added)
+            const edgeToDelete = edgesBetweenNodes.pop();
+            this.edges = this.edges.filter(edge => edge !== edgeToDelete);
+            console.log(`Edge deleted: ${nodePair[0].label} -> ${nodePair[1].label}`);
+
+            // Update indices for remaining edges between these nodes
+            edgesBetweenNodes.forEach((edge, index) => {
+                edge.index = index + 1;
+                edge.totalEdges = edgesBetweenNodes.length;
+            });
+        }
+
+        this.clearEdgeMode();
+    }
+
+	/**
+     * Activates the edge mode, determining whether edges are being added or deleted.
+     * @param {string} action - The action to perform ('add' or 'delete').
+     */
+    activateEdgeMode(action) {
+        if (action === "add" || action === "delete") {
+            console.log(`Edge mode activated: ${action}`);
+            this.edgeMode = action;
+        }
+    }
+
+    /**
+     * Deletes a node from the graph and all associated edges.
+     * @param {Node} nodeToDelete - The node to be deleted.
+     */
+    deleteNode(nodeToDelete) {
+        // Remove the node from the list of nodes
+        this.nodes = this.nodes.filter(node => node !== nodeToDelete);
+
+        // Remove all edges connected to the node
+        this.edges = this.edges.filter(
+            edge => edge.node1 !== nodeToDelete && edge.node2 !== nodeToDelete
+        );
+
+        // If the deleted node was selected, clear the selection
+        if (this.selectedNode === nodeToDelete) {
+            console.log("Selected node deleted, resetting selection.");
+            this.selectedNode = null;
+        }
+
+        // Reset edge mode, if applicable
+        this.edgeMode = null;
+
+        console.log(`Node deleted: ${nodeToDelete.label}`);
+    }
+
+	/**
+     * Clears the current edge mode and resets the selected node.
+     */
+    clearEdgeMode() {
+        this.selectedNode = null;
+        this.edgeMode = null;
+    }
+
+	/**
+     * Gets all edges between two nodes, considering directed or undirected graph rules.
+     * @param {Node} node1 - The first node.
+     * @param {Node} node2 - The second node.
+     * @returns {Edge[]} - An array of edges between the two nodes.
+     */
+    getEdgesBetweenNodes(node1, node2) {
+        return this.edges.filter(edge =>
+            this.directed
+                ? edge.node1 === node1 && edge.node2 === node2
+                : [edge.node1, edge.node2].sort((a, b) => a.label - b.label)
+                    .every((node, index) => [node1, node2].sort((a, b) => a.label - b.label)[index] === node)
+        );
+    }
+
+	/**
+     * Displays a context menu near the clicked node with a list of actions.
+     * @param {Node} clickedNode - The node for which the context menu is being shown.
+     */
+    showContextMenu(clickedNode) {
+        const buttonColor = '#32CD32'; // Define the button color here (light green)
+
+        // Create a container for the context menu
+        const menuContainer = this.createMenuContainer(clickedNode);
+
+        // Define the buttons and their corresponding actions
+        const menuOptions = [
+            { label: 'Delete Node', action: () => this.deleteNode(clickedNode) },
+            { label: 'View Info', action: () => this.showModal(`Node Info: ${clickedNode.label}`) },
+            { label: 'Custom Action', action: () => this.doSomething('Custom action triggered!') }
+        ];
+
+        // Create buttons for each menu option
+        menuOptions.forEach(option => this.createMenuButton(option.label, option.action, buttonColor, menuContainer));
+
+        // Close the menu when clicking anywhere outside
+        this.addCloseListener(menuContainer);
+    }
+
+	/**
+     * Creates the container element for the context menu.
+     * @param {Node} clickedNode - The node near which the context menu should appear.
+     * @returns {HTMLElement} The context menu container.
+     */
+    createMenuContainer(clickedNode) {
+        return createDiv()
+            .style('position', 'absolute')
+            .style('top', `${clickedNode.y + 20}px`) // Position slightly below the node
+            .style('left', `${clickedNode.x + 20}px`) // Position slightly to the right of the node
+            .style('background-color', '#FFF')
+            .style('border', '1px solid #000')
+            .style('padding', '10px')
+            .style('border-radius', '8px')
+            .style('box-shadow', '0 8px 16px rgba(0, 0, 0, 0.3)')
+            .style('z-index', '10')
+            .style('display', 'flex')
+            .style('flex-direction', 'column'); // Stack buttons vertically
+    }
+
+	/**
+     * Creates a button for the context menu.
+     * @param {string} label - The label for the button.
+     * @param {Function} action - The action to perform when the button is clicked.
+     * @param {string} buttonColor - The background color of the button.
+     * @param {HTMLElement} parentContainer - The parent container to which the button will be added.
+     */
+    createMenuButton(label, action, buttonColor, parentContainer) {
+        createButton(label)
+            .mousePressed(() => {
+                action();
+                parentContainer.remove(); // Close the menu after an action is triggered
+            })
+            .style('padding', '5px 10px')
+            .style('margin', '3px 0') // Reduced vertical space
+            .style('background-color', buttonColor)
+            .style('color', '#fff')
+            .style('border', 'none')
+            .style('border-radius', '5px')
+            .parent(parentContainer);
+    }
+	
+	/**
+     * Adds a listener to close the context menu when clicking outside of it.
+     * @param {HTMLElement} menuContainer - The container of the context menu.
+     */
+    addCloseListener(menuContainer) {
+        const closeMenu = (event) => {
+            if (!menuContainer.elt.contains(event.target)) {
+                menuContainer.remove();
+                document.removeEventListener('click', closeMenu); // Remove listener to prevent memory leaks
+            }
+        };
+
+        // Attach the event listener
+        document.addEventListener('click', closeMenu);
+    }
+	
+	/**
+     * Logs a custom message or performs an action based on the context menu.
+     * @param {string} message - The message or action to process.
+     */
+    doSomething(message) {
+        console.log(message); // Log the action
+        this.showModal(message); // Display the message in a modal
+    }
+	
+	/**
+     * Displays a modal with a custom message.
+     * @param {string} message - The message to display.
+     */
+    showModal(message) {
+        // Create the modal container
+        const modalContainer = createDiv()
+            .style('position', 'fixed')
+            .style('top', '50%')
+            .style('left', '50%')
+            .style('transform', 'translate(-50%, -50%)')
+            .style('background-color', '#FFF')
+            .style('border', '1px solid #000')
+            .style('padding', '20px')
+            .style('border-radius', '10px')
+            .style('box-shadow', '0 8px 16px rgba(0, 0, 0, 0.3)')
+            .style('z-index', '1000');
+
+        // Add the message
+        createDiv(message)
+            .style('margin-bottom', '15px')
+            .style('font-size', '16px')
+            .parent(modalContainer);
+
+        // Add a "Close" button
+        createButton('Close')
+            .style('padding', '5px 10px')
+            .style('background-color', '#FF6347') // Tomato color for the button
+            .style('color', '#FFF')
+            .style('border', 'none')
+            .style('border-radius', '5px')
+            .parent(modalContainer)
+            .mousePressed(() => modalContainer.remove());
+    }
+
+    /**
+     * Handles the dragging of a node with the mouse.
+     * @param {Node} node - The node being dragged.
+     */
+    handleMouseDragged(node) {
+        if (!node) return;
+        node.x = mouseX;
+        node.y = mouseY;
     }
 }
