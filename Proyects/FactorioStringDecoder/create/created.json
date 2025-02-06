@@ -1,0 +1,94 @@
+{
+    "blueprint": {
+        "icons": [
+            {
+                "signal": {
+                    "name": "pushbutton"
+                },
+                "index": 1
+            },
+            {
+                "signal": {
+                    "name": "pushbutton"
+                },
+                "index": 2
+            }
+        ],
+        "entities": [
+            {
+                "entity_number": 2,
+                "name": "pushbutton",
+                "position": {
+                    "x": 64.5,
+                    "y": -27.5
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-D",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            },
+            {
+                "entity_number": 2,
+                "name": "pushbutton",
+                "position": {
+                    "x": 64.5,
+                    "y": -27.5
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-D",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            }
+        ],
+        "item": "blueprint",
+        "version": 562949955518464
+    }
+}

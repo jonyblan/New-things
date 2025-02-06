@@ -1,0 +1,168 @@
+{
+    "blueprint": {
+        "icons": [
+            {
+                "signal": {
+                    "name": "pushbutton"
+                },
+                "index": 1
+            }
+        ],
+        "entities": [
+            {
+                "entity_number": 1,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 1
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 3,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 2
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            },
+            {
+                "entity_number": 2,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 2
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 5
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 10
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            },
+            {
+                "entity_number": 3,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 3
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 5
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 10
+                                    },
+                                    {
+                                        "index": 3,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 20
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            },
+            {
+                "entity_number": 4,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 4
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -2
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": false
+                }
+            }
+        ],
+        "item": "blueprint",
+        "version": 562949955518464
+    }
+}
