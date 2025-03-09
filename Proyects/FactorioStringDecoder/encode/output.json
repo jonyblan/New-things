@@ -28,23 +28,7 @@
                                         "name": "lava",
                                         "quality": "normal",
                                         "comparator": "=",
-                                        "count": 1
-                                    },
-                                    {
-                                        "index": 2,
-                                        "type": "virtual",
-                                        "name": "signal-B",
-                                        "quality": "normal",
-                                        "comparator": "=",
-                                        "count": 1
-                                    },
-                                    {
-                                        "index": 3,
-                                        "type": "virtual",
-                                        "name": "signal-A",
-                                        "quality": "normal",
-                                        "comparator": "=",
-                                        "count": 2
+                                        "count": 85
                                     }
                                 ]
                             }
@@ -72,7 +56,7 @@
                                         "name": "lava",
                                         "quality": "normal",
                                         "comparator": "=",
-                                        "count": 3
+                                        "count": 84
                                     }
                                 ]
                             }
@@ -100,23 +84,523 @@
                                         "name": "lava",
                                         "quality": "normal",
                                         "comparator": "=",
-                                        "count": 50
+                                        "count": 86
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 4,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 4
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 84
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 5,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 5
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
                                     },
                                     {
                                         "index": 2,
                                         "type": "virtual",
-                                        "name": "signal-I",
+                                        "name": "signal-A",
                                         "quality": "normal",
                                         "comparator": "=",
-                                        "count": 0
+                                        "count": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 6,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 6
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 7,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 7
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "255"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 8,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 8
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 87
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
                                     },
                                     {
                                         "index": 3,
                                         "type": "virtual",
-                                        "name": "signal-J",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 2
+                                    },
+                                    {
+                                        "index": 4,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 9,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 9
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 10,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 10
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 87
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
                                         "quality": "normal",
                                         "comparator": "=",
                                         "count": 1
+                                    },
+                                    {
+                                        "index": 3,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 2
+                                    },
+                                    {
+                                        "index": 4,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 11,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 11
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 12,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 12
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 13,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 13
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 87
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 3,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 2
+                                    },
+                                    {
+                                        "index": 4,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 14,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 14
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": -1
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": "2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 15,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 15
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 87
+                                    },
+                                    {
+                                        "index": 2,
+                                        "type": "virtual",
+                                        "name": "signal-A",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 1
+                                    },
+                                    {
+                                        "index": 3,
+                                        "type": "virtual",
+                                        "name": "signal-B",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 2
+                                    },
+                                    {
+                                        "index": 4,
+                                        "type": "virtual",
+                                        "name": "signal-C",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 3
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "is_on": true
+                }
+            },
+            {
+                "entity_number": 16,
+                "name": "constant-combinator",
+                "position": {
+                    "x": 0,
+                    "y": 16
+                },
+                "control_behavior": {
+                    "sections": {
+                        "sections": [
+                            {
+                                "index": 1,
+                                "filters": [
+                                    {
+                                        "index": 1,
+                                        "type": "fluid",
+                                        "name": "lava",
+                                        "quality": "normal",
+                                        "comparator": "=",
+                                        "count": 86
                                     }
                                 ]
                             }

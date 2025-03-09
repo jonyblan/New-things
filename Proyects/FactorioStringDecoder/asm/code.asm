@@ -1,9 +1,16 @@
-HELLO: MOV A, B
-STC
-JMP HELLO
-
-; A = 1
-; B = 2
-; [10] = 2
-; C = 2
-; D = 2
+RM
+RS
+US
+RS
+MOV A, 1
+MOV B, 1
+MOV C, 255
+DRAW A, B, C
+MOV A, 2
+DRAW A, B, C
+MOV A, 1
+MOV B, 2
+DRAW A, B, C
+MOV A, 2
+DRAW A, B, C
+US

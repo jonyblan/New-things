@@ -34,7 +34,7 @@ def analyzeInstruction(instruction, index, labels):
         "IMUL": notImplemented,
         "INC": inc,
         "DEC": dec,
-        "CMP": cmp__,
+        "CMP": cmp_,
         "SAL": notImplemented,
         "SAR": notImplemented,
         "RCL": notImplemented,
@@ -86,12 +86,17 @@ def analyzeInstruction(instruction, index, labels):
         "JNO": jno,
         "JS": js,
         "JNS": jns,
+		"RS": rs,
+		"RM": rm,
+		"US": us,
+		"DRAW": draw,
+		"RP": rp
     }
 
     # Get the operation from the first part of the instruction
     operation = instruction[0]
 
-    # Check if the operation exists in the dictionary and call the corresponding function
+    # Check if the operation exists in the wictionary and call the corresponding function
     if operation in instruction_set:
         return instruction_set[operation](instruction, index, labels)
     else:
@@ -158,7 +163,7 @@ def cli(instruction, index, _):
 
 def push(instruction, index, _):
     operation, destination = instruction
-	destSignal = letter_to_signal(destination)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 29, destSignal, "virtual", 1)
 
 def pushf(instruction, index, _):
@@ -172,82 +177,82 @@ def pop(instruction, index, _):
 
 def add(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 21, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def adc(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 22, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def sub(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 23, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def sbb(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 24, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def div(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 25, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def mul(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 27, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def inc(instruction, index, _):
     operation, destination = instruction
-	destSignal = letter_to_signal(destination)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 29, destSignal, "virtual", 1)
 
 def dec(instruction, index, _):
     operation, destination = instruction
-	destSignal = letter_to_signal(destination)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 30, destSignal, "virtual", 1)
 
 def cmp_(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 31, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def neg(instruction, index, _):
     operation, destination = instruction
-	destSignal = letter_to_signal(destination)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 38, destSignal, "virtual", 1)
 
 def not_(instruction, index, _):
     operation, destination = instruction
-	destSignal = letter_to_signal(destination)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 39, destSignal, "virtual", 1)
 
 def and_(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 40, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def or_(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 41, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def xor_(instruction, index, _):
     operation, destination, source = instruction
-	sourceSignal = letter_to_signal(source)
-	destSignal = letter_to_signal(destination)
+    sourceSignal = letter_to_signal(source)
+    destSignal = letter_to_signal(destination)
     return generate_entity(index, "lava", "fluid", 42, destSignal, "virtual", 1, sourceSignal, "virtual", 2)
 
 def jmp(instruction, index, labels):
@@ -397,10 +402,31 @@ def jns(instruction, index, labels):
     else:
         return generate_entity(index, "lava", "fluid", 82, "signal-I", "virtual", target_line - 1, "signal-J", "virtual", 1)
 
+def rs(instruction, index, labels):
+    return generate_entity(index, "lava", "fluid", 84)
+
+def rm(instruction, index, labels):
+    return generate_entity(index, "lava", "fluid", 85)
+
+def us(instruction, index, labels):
+    return generate_entity(index, "lava", "fluid", 86)
+
+def draw(instruction, index, _):
+    _, x, y, z = instruction
+    xSignal = letter_to_signal(x)
+    ySignal = letter_to_signal(y)
+    zSignal = letter_to_signal(z)
+    return generate_entity(index, "lava", "fluid", 87, xSignal, "virtual", 1, ySignal, "virtual", 2, zSignal, "virtual", 3)
 
 
+def rp(instruction, index, _):
+    x, y, color = instruction
+    xSignal = letter_to_signal(x)
+    ySignal = letter_to_signal(y)
+    return generate_entity(index, "lava", "fluid", 88, xSignal, "virtual", x, ySignal, "virtual", y)
 
-def generate_entity(index, signal1, type1, value1, signal2=None, type2=None, value2=None, signal3=None, type3=None, value3=None):
+
+def generate_entity(index, signal1, type1, value1, signal2=None, type2=None, value2=None, signal3=None, type3=None, value3=None, signal4=None, type4=None, value4=None):
     """Generates an entity JSON structure with optional signals."""
     
     # Base entity structure
@@ -441,6 +467,7 @@ def generate_entity(index, signal1, type1, value1, signal2=None, type2=None, val
     add_signal(filters, 1, signal1, type1, value1)
     add_signal(filters, 2, signal2, type2, value2)
     add_signal(filters, 3, signal3, type3, value3)
+    add_signal(filters, 4, signal4, type4, value4)
 
     return entity
 
